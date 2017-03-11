@@ -22,33 +22,33 @@ enum EGameState{
 	GS_NONE
 }
 
-public class Game implements ApplicationListener{
+class Game implements ApplicationListener{
 	
-	public OrthographicCamera camera;
-	public ShapeRenderer shapeRenderer;
-	public float accacc = 2.7f;
-	public BitmapFont Font;
-	public BitmapFont font2;
-	public SpriteBatch batch;
+	private OrthographicCamera camera;
+	ShapeRenderer shapeRenderer;
+	float accacc = 2.7f;
+	BitmapFont Font;
+	BitmapFont font2;
+	SpriteBatch batch;
 	private EGameState state;
 	private Intro intro;
 	private Endless endless;
 	private Menu main;
 	private Breakblock breakblock;
-	public FreeTypeFontGenerator FontGenerator;
-	public ECM ecm;
-	public Color colors[] = new Color[8];
-	public int color1id;
-	public int color2id;
-	public boolean backpressed = false;
-	public Integer highscorebb = 0;
-	public Integer highscoreee = 0;
-	public Integer highscoreem = 0;
-	public Integer highscoreen = 0;
-	public float volume = 0.72f;
-	public Preferences prefs;
-	public I18NBundle myBundle;
-    public boolean bPaused = false;
+	FreeTypeFontGenerator FontGenerator;
+	ECM ecm;
+	Color colors[] = new Color[8];
+	int color1id;
+	int color2id;
+	boolean backpressed = false;
+	Integer highscorebb = 0;
+	Integer highscoreee = 0;
+	Integer highscoreem = 0;
+	Integer highscoreen = 0;
+	float volume = 0.72f;
+	Preferences prefs;
+	I18NBundle myBundle;
+    boolean bPaused = false;
 	
 	
 	//Method called once when the application is created
