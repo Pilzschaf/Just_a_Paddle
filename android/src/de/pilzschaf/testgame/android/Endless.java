@@ -23,14 +23,14 @@ public class Endless {
 	
 	public void render(){
         if(Gdx.input.justTouched()){
-            if(!game.bPaused){
-                game.bPaused = true;
+            if(!game.isPaused){
+                game.isPaused = true;
             }
             else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.4f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.6f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.6f ){
-                game.bPaused = false;
+                game.isPaused = false;
             }
         }
-        if(!game.bPaused) {
+        if(!game.isPaused) {
             if (game.ecm == ECM.ECM_HARD) {
                 time += Gdx.graphics.getDeltaTime();
                 if (time > 0.17f) {
@@ -127,7 +127,7 @@ public class Endless {
 		game.shapeRenderer.rect(paddle.x, paddle.y, paddle.width, paddle.height);
 		game.shapeRenderer.rect(ball.x, ball.y, ball.width, ball.height);
 		game.shapeRenderer.rect(0.0f, 740.0f, 480.0f, 60.0f);
-        if(game.bPaused){
+        if(game.isPaused){
             game.shapeRenderer.rect(190.0f, 350.0f, 100.0f, 100.0f);
             game.shapeRenderer.setColor(color1);
             game.shapeRenderer.rect(205.0f, 365.0f, 25.0f, 70.0f);

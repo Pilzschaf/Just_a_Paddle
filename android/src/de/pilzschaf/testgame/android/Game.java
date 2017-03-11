@@ -34,7 +34,7 @@ class Game implements ApplicationListener{
 	private Intro intro;
 	private Endless endless;
 	private Menu main;
-	private Breakblock breakblock;
+	private BreakBlock breakBlock;
 	FreeTypeFontGenerator FontGenerator;
 	ECM ecm;
 	Color colors[] = new Color[8];
@@ -48,7 +48,7 @@ class Game implements ApplicationListener{
 	float volume = 0.72f;
 	Preferences prefs;
 	I18NBundle myBundle;
-    boolean bPaused = false;
+    boolean isPaused = false;
 	
 	
 	//Method called once when the application is created
@@ -100,7 +100,7 @@ class Game implements ApplicationListener{
 		prefs = Gdx.app.getPreferences("highscore.prefs");
 		intro = new Intro();
 		endless = new Endless();
-		breakblock = new Breakblock();
+		breakBlock = new BreakBlock();
 		main = new Menu();
 		SetGameState(EGameState.GS_INTRO);
 		
@@ -126,7 +126,7 @@ class Game implements ApplicationListener{
 			main.render();
 		}
 		else if(state == EGameState.GS_BREAKBLOCK){
-			breakblock.render();
+			breakBlock.render();
 		}
 		if(!Gdx.input.isButtonPressed(Keys.BACK))
 			backpressed = false;
@@ -148,7 +148,7 @@ class Game implements ApplicationListener{
 		prefs.putFloat("volume", volume);
 		prefs.flush();
         if(state == EGameState.GS_BREAKBLOCK || state == EGameState.GS_ENDLESS)
-            bPaused = true;
+            isPaused = true;
 	}
 	//resumes from pause
 	@Override
@@ -172,7 +172,7 @@ class Game implements ApplicationListener{
             main.destroy();
         }
         else if(state == EGameState.GS_BREAKBLOCK){
-            breakblock.destroy();
+            breakBlock.destroy();
         }
 		state = NewState;
 		if(state == EGameState.GS_INTRO){
@@ -185,7 +185,7 @@ class Game implements ApplicationListener{
 			main.create(this);
 		}
 		else if(state == EGameState.GS_BREAKBLOCK){
-			breakblock.create(this);
+			breakBlock.create(this);
 		}
 	}
 

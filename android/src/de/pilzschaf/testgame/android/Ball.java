@@ -3,16 +3,16 @@ package de.pilzschaf.testgame.android;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Ball {
+class Ball {
 	
-	public Rectangle ball;
-	public boolean exists = false;
-	public float velocityX;
-	public float velocityY;
-	public Breakblock breakblock;
+	Rectangle ball;
+	boolean exists = false;
+	float velocityX;
+	float velocityY;
+	BreakBlock breakBlock;
 	private int delay;
 	
-	public void update(){
+	void update(){
 		if(delay < 1)
 		{
 			ball.x += velocityX;
@@ -25,27 +25,27 @@ public class Ball {
 			if(ball.x > 480.0f - ball.width){
 				ball.x = 480.0f - ball.width;
 				velocityX = velocityX * -1.0f;
-				breakblock.wallsound.play(0.7f);
+				breakBlock.wallSound.play(breakBlock.game.volume);
 			}
 			else if(ball.x < 0.0f){
 				ball.x = 0.0f;
 				velocityX = velocityX * -1.0f;
-				breakblock.wallsound.play(0.7f);
+				breakBlock.wallSound.play(breakBlock.game.volume);
 			}
 			if(ball.y > 740.0f - ball.height){
 				ball.y = 740.0f - ball.height;
 				velocityY = velocityY * -1.0f;
 				velocityX = (float)Math.random() * 14.0f - 7.0f;
-				breakblock.wallsound.play(0.7f);
+				breakBlock.wallSound.play(breakBlock.game.volume);
 			}
-			else if(ball.y < breakblock.paddle.y + breakblock.paddle.height){
-				if(ball.x <= breakblock.paddle.x + breakblock.paddle.width && ball.x >= breakblock.paddle.x - ball.width && ball.y > breakblock.paddle.y){
-					ball.y = breakblock.paddle.y + breakblock.paddle.height;
+			else if(ball.y < breakBlock.paddle.y + breakBlock.paddle.height){
+				if(ball.x <= breakBlock.paddle.x + breakBlock.paddle.width && ball.x >= breakBlock.paddle.x - ball.width && ball.y > breakBlock.paddle.y){
+					ball.y = breakBlock.paddle.y + breakBlock.paddle.height;
 					velocityY = velocityY * -1.1f;
-					if(breakblock.paddle.x != 0.0f && breakblock.paddle.x != 480.0f - breakblock.paddle.width){
-						velocityX = velocityX + Gdx.input.getAccelerometerX() * breakblock.game.accacc * 0.5f;
+					if(breakBlock.paddle.x != 0.0f && breakBlock.paddle.x != 480.0f - breakBlock.paddle.width){
+						velocityX = velocityX + Gdx.input.getAccelerometerX() * breakBlock.game.accacc * 0.5f;
 					}
-					breakblock.wallsound.play(breakblock.game.volume);
+					breakBlock.wallSound.play(breakBlock.game.volume);
 				}
 				if(ball.y < 0.0f){
 					exists = false;
@@ -53,8 +53,8 @@ public class Ball {
 				
 			}
 			for(int i = 0; i < 32; i++){
-				if(breakblock.blocks[i].exists){
-					breakblock.blocks[i].Collide(this);
+				if(breakBlock.blocks[i].exists){
+					breakBlock.blocks[i].collide(this);
 				}
 			}
 		}
@@ -62,8 +62,8 @@ public class Ball {
 			delay --;
 		}
 	}
-	public void create(Breakblock pbreakblock){
-		breakblock = pbreakblock;
+	void create(BreakBlock breakBlock){
+		this.breakBlock = breakBlock;
 		exists = true;
 		velocityX = (float)Math.random() * 4.0f -2.0f;
 		velocityY = -5.0f;
@@ -74,8 +74,8 @@ public class Ball {
 		ball.height = 32;
 		delay = 0;
 	}
-	public void create(Breakblock pbreakblock, int pdelay){
-		breakblock = pbreakblock;
+	void create(BreakBlock breakBlock, int delay){
+		this.breakBlock = breakBlock;
 		exists = true;
 		velocityX = (float)Math.random() * 4.0f -2.0f;
 		velocityY = -5.0f;
@@ -84,6 +84,6 @@ public class Ball {
 		ball.y = 500;
 		ball.width = 32;
 		ball.height = 32;
-		delay = pdelay;
+		this.delay = delay;
 	}
 }

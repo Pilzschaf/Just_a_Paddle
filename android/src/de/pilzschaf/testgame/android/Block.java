@@ -2,12 +2,12 @@ package de.pilzschaf.testgame.android;
 
 import com.badlogic.gdx.math.Rectangle;
 
-public class Block {
-	public int hardness;
-	public boolean exists = false;
-	public Rectangle block;
+class Block {
+	private int hardness;
+	boolean exists = false;
+	Rectangle block;
 	
-	public void create(float posX, float posY, int phardness){
+	void create(float posX, float posY, int phardness){
 		exists = true;
 		block = new Rectangle();
 		block.height = 32.0f;
@@ -16,9 +16,9 @@ public class Block {
 		block.y = posY;
 		hardness = phardness;
 	}
-	public void Collide(Ball ball){
+	void collide(Ball ball){
 		if(ball.ball.x + 32.0f >= block.x && ball.ball.x <= block.x + 100.0f && ball.ball.y + 32.0f > block.y && ball.ball.y < block.y + 32.0f){
-			ball.breakblock.ChangeColor();
+			ball.breakBlock.swapColors();
 			float fDistLeft = Math.abs(ball.ball.x + 32.0f) - block.x;		//Stimmt
 			float fDistRight = Math.abs(ball.ball.x) - block.x + 100.0f;	//Stimmt
 			float fDistTop = Math.abs(ball.ball.y + 32.0f) - block.y;		//Stimmt
@@ -47,25 +47,22 @@ public class Block {
 				System.out.println("Bottom");
 			}
 			hardness --;
-			ball.breakblock.wallsound.play(0.5f);
+			ball.breakBlock.wallSound.play(ball.breakBlock.game.volume);
 			if(hardness < 1){
 				exists = false;
 				double random = Math.random();
 				if(random < 0.1){
 					int temp = 0;
-					while(ball.breakblock.balls[temp].exists){
+					while(ball.breakBlock.balls[temp].exists){
 						temp ++;
 					}
-					ball.breakblock.balls[temp].create(ball.breakblock);
+					ball.breakBlock.balls[temp].create(ball.breakBlock);
 				}
 				else if(random < 0.14){
-					ball.breakblock.lives ++;
+					ball.breakBlock.lives ++;
 				}
 			}
 			
-		}
-		else{
-			return;
 		}
 	}
 }
