@@ -2,6 +2,7 @@ package de.pilzschaf.testgame.android;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -18,8 +19,42 @@ class Endless {
 	private Integer points = 0;
 	private Game game;
 	private float time = 0.0f;
-	
-	void render() {
+    private float volume = 1.0f;
+    private Sound wallSound;
+
+    void create(Game game){
+        this.game = game;
+        points = 0;
+        paddle = new Rectangle();
+        paddle.x = 480 / 2;
+        paddle.y = 30;
+        paddle.width = 128;
+        paddle.height = 32;
+        ball = new Rectangle();
+        ball.x = 480/2;
+        ball.y = 700;
+        ball.width = 32;
+        ball.height = 32;
+        ballDirectionX = (float)Math.random() * 4.0f * ballDirectionX;
+        ballDirectionY = -6.0f;
+        prepareColors();
+        this.volume = this.game.volume;
+        this.wallSound = game.wallSound;
+    }
+
+    private void prepareColors() {
+        color1 = new Color();
+        color2 = new Color();
+        if(this.game.ecm == ECM.ECM_LIGHT){
+            color1 = this.game.colors[this.game.color1id];
+            color2 = this.game.colors[this.game.color2id];
+        }
+        else{
+            changeColor();
+        }
+    }
+
+    void render() {
         move();
         Gdx.gl.glClearColor(color1.r, color1.g, color1.b, color1.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -79,12 +114,12 @@ class Endless {
                     ball.x = 480.0f - ball.width;
                 ballDirectionX = ballDirectionX * -1.0f;
                 changeColor();
-                game.wallSound.play(game.volume);
+                playWallSound();
             } else if (ball.x < 0.0f) {
                 ball.x = 0.0f;
                 ballDirectionX = ballDirectionX * -1.0f;
                 changeColor();
-                game.wallSound.play(game.volume);
+                playWallSound();
             }
             if (ball.y > 740.0f - ball.height) {
                 ball.y = 740.0f - ball.height;
@@ -92,7 +127,7 @@ class Endless {
                 points++;
                 ballDirectionX = (float) Math.random() * 14.0f - 7.0f;
                 changeColor();
-                game.wallSound.play(game.volume);
+                playWallSound();
             } else if (ball.y < paddle.y + paddle.height) {
                 if (ball.x <= paddle.x + paddle.width && ball.x >= paddle.x - ball.width && ball.y > paddle.y) {
                     ball.y = paddle.y + paddle.height;
@@ -101,7 +136,7 @@ class Endless {
                         ballDirectionX = ballDirectionX + Gdx.input.getAccelerometerX() * game.accacc * 0.5f;
                     }
                     changeColor();
-                    game.wallSound.play(game.volume);
+                    playWallSound();
                 }
                 if (ball.y < 0.0f) {
                     if (game.ecm == ECM.ECM_LIGHT) {
@@ -184,33 +219,11 @@ class Endless {
         }
     }
 
-    void create(Game game){
-		this.game = game;
-        points = 0;
-		paddle = new Rectangle();
-		paddle.x = 480 / 2;
-		paddle.y = 30;
-		paddle.width = 128;
-		paddle.height = 32;
-		ball = new Rectangle();
-		ball.x = 480/2;
-		ball.y = 700;
-		ball.width = 32;
-		ball.height = 32;
-		ballDirectionX = (float)Math.random() * 4.0f * ballDirectionX;
-		ballDirectionY = -6.0f;
-		color1 = new Color();
-		color2 = new Color();
-		if(this.game.ecm == ECM.ECM_LIGHT){
-			color1 = this.game.colors[this.game.color1id];
-			color2 = this.game.colors[this.game.color2id];
-		}
-		else{
-			changeColor();
-		}
-		//this.game.wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
-	}
-	void destroy(){
+    private void playWallSound() {
+        wallSound.play(this.volume);
+    }
+
+    void destroy(){
         points = 0;
         paddle = new Rectangle();
         paddle.x = 480 / 2;

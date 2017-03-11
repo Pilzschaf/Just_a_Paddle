@@ -106,7 +106,6 @@ class Game implements ApplicationListener{
 		breakBlock = new BreakBlock();
 		main = new Menu();
 		SetGameState(EGameState.GS_INTRO);
-		
 	}
 	//Called after create and on resize
 	@Override
