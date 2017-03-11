@@ -7,14 +7,14 @@ class Block {
 	boolean exists = false;
 	Rectangle block;
 	
-	void create(float posX, float posY, int phardness){
+	void create(float posX, float posY, int hardness){
 		exists = true;
 		block = new Rectangle();
 		block.height = 32.0f;
 		block.width = 100.0f;
 		block.x = posX;
 		block.y = posY;
-		hardness = phardness;
+		this.hardness = hardness;
 	}
 	void collide(Ball ball){
 		if(ball.ball.x + 32.0f >= block.x && ball.ball.x <= block.x + 100.0f && ball.ball.y + 32.0f > block.y && ball.ball.y < block.y + 32.0f){

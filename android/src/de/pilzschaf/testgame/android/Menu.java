@@ -47,7 +47,7 @@ public class Menu {
 	private Rectangle sensityrect;
 	private Rectangle volumerect;
 	
-	public void render(){
+	void render(){
 		paddle.x -= Gdx.input.getAccelerometerX() * game.accacc;
 		if(paddle.x > 480.0f - paddle.width)
 			paddle.x = 480.0f - paddle.width;
@@ -474,9 +474,9 @@ public class Menu {
 			}
 		}
 		else if(menuState == MenuState.MS_OPTIONS){
-			sensityrect.x = 30.0f + game.accacc * 100.0f;
+			sensityrect.x = 30.0f + game.accacc * 85.0f;
 			sensityrect.y = 600.0f - 50.0f;
-			volumerect.x = 30.0f + game.volume * 340.0f;
+			volumerect.x = 30.0f + game.volume * 330.0f;
 			volumerect.y = 450.0f - 50.0f;
 			sensityrect.height = 32.0f;
 			sensityrect.width = 32.0f;
@@ -503,13 +503,11 @@ public class Menu {
 				game.backpressed = true;
 			}
 			if(Gdx.input.isTouched()){
-				if((float)Gdx.input.getX()/Gdx.graphics.getWidth() > 0.05f && (float)Gdx.input.getX()/Gdx.graphics.getWidth() < 0.95f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() < 0.37f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() > 0.25f){
-					game.accacc = ((float)Gdx.input.getX()/Gdx.graphics.getWidth()-0.05f)*4.2f;
-					
+				if((float)Gdx.input.getX()/Gdx.graphics.getWidth() > 0.05f && (float)Gdx.input.getX()/Gdx.graphics.getWidth() < 0.95f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() < 0.39f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() > 0.23f){
+					game.accacc = ((float)Gdx.input.getX()/Gdx.graphics.getWidth()-0.05f)*5.0f;
 				}
-				else if((float)Gdx.input.getX()/Gdx.graphics.getWidth() > 0.05f && (float)Gdx.input.getX()/Gdx.graphics.getWidth() < 0.95f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() < 0.55f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() > 0.45f){
+				else if((float)Gdx.input.getX()/Gdx.graphics.getWidth() > 0.05f && (float)Gdx.input.getX()/Gdx.graphics.getWidth() < 0.95f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() < 0.57f && (float)Gdx.input.getY()/Gdx.graphics.getHeight() > 0.43f){
 					game.volume = ((float)Gdx.input.getX()/Gdx.graphics.getWidth()-0.05f)*1.3f;
-					
 				}
 			}
 			
@@ -630,7 +628,7 @@ public class Menu {
 			
 		}
 	}
-	public void create(Game pgame){
+	void create(Game pgame){
 		game = pgame;
 		ball1 = new Rectangle();
 		ball2 = new Rectangle();
@@ -661,7 +659,7 @@ public class Menu {
 		volumerect.height= 32.0f;
 		volumerect.width = 32.0f;
 	}
-	public void destroy(){
+	void destroy(){
 		
 	}
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,6 +30,7 @@ class Game implements ApplicationListener{
 	float accacc = 2.7f;
 	BitmapFont Font;
 	BitmapFont font2;
+	Sound wallSound;
 	SpriteBatch batch;
 	private EGameState state;
 	private Intro intro;
@@ -96,6 +98,7 @@ class Game implements ApplicationListener{
 		colors[7].b = 1.0f;
 		colors[7].a = 1.0f;
 		FileHandle baseFileHandle = Gdx.files.internal("i18n/MyBundle/MyBundle");
+        wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
 		myBundle = I18NBundle.createBundle(baseFileHandle);
 		prefs = Gdx.app.getPreferences("highscore.prefs");
 		intro = new Intro();
@@ -160,7 +163,7 @@ class Game implements ApplicationListener{
 	public void dispose(){
 
     }
-	public void SetGameState(EGameState NewState){
+	void SetGameState(EGameState NewState){
 		
 		if(state == EGameState.GS_INTRO){
             intro.destroy();

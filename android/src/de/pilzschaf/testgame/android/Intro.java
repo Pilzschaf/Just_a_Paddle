@@ -7,28 +7,28 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
-public class Intro {
+class Intro {
 	
 	private Game game;
 	private Texture introImage;
 	private int frame = 0 ;
 
-	public void render(){
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	void render(){
+		Gdx.gl.glClearColor(0.0392f, 0.0784f, 0.106f, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		game.batch.begin();
 		game.batch.draw(introImage, -15.0f, 150.0f);
 		game.batch.end();
 		frame ++;
-		if(frame > 10){
+		if(frame > 50){
 			game.SetGameState(EGameState.GS_MAIN);
 		}
 	}
-	public void create(Game pgame){
-		game = pgame;
-		introImage = new Texture(Gdx.files.internal("gamestudio.png"));
+	void create(Game game){
+		this.game = game;
+		introImage = new Texture(Gdx.files.internal("studio.jpg"));
 	}
-	public void destroy(){
+	void destroy(){
 		Color color = new Color();
 		color.r = 1.0f;
 		color.g = 1.0f;

@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "de.pilzschaf.testgame"
-        minSdkVersion 9
+        minSdkVersion 15
         targetSdkVersion 25
     }
 }
