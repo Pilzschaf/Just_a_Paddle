@@ -208,7 +208,7 @@ class Endless {
 		else{
 			changeColor();
 		}
-		this.game.wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
+		//this.game.wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
 	}
 	void destroy(){
         points = 0;

@@ -15,7 +15,6 @@ class BreakBlock {
 	private Color color2;
 	Rectangle paddle;
 	private Rectangle liveSlot;
-	Sound wallSound;
 	int lives;
 	private int level;
 	Ball balls[] = new Ball[32];
@@ -43,7 +42,6 @@ class BreakBlock {
 		balls[0].create(this);
 		level = 1;
 		createLevel(level);
-		wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
 	}
 	void render(){
         handleInput();

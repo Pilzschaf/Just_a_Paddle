@@ -47,7 +47,7 @@ class Block {
 				System.out.println("Bottom");
 			}
 			hardness --;
-			ball.breakBlock.wallSound.play(ball.breakBlock.game.volume);
+			ball.breakBlock.game.wallSound.play(ball.breakBlock.game.volume);
 			if(hardness < 1){
 				exists = false;
 				double random = Math.random();
