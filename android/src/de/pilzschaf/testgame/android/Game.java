@@ -1,5 +1,8 @@
 package de.pilzschaf.testgame.android;
 
+import android.content.Intent;
+import android.net.Uri;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -14,6 +17,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.GameHelper;
+
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
+import static de.pilzschaf.testgame.android.AndroidLauncher.launcher;
 
 enum EGameState{
 	GS_INTRO,
@@ -23,7 +31,7 @@ enum EGameState{
 	GS_NONE
 }
 
-class Game implements ApplicationListener{
+class Game implements ApplicationListener, PlayServices{
 	
 	private OrthographicCamera camera;
 	ShapeRenderer shapeRenderer;
@@ -39,7 +47,7 @@ class Game implements ApplicationListener{
 	private BreakBlock breakBlock;
 	FreeTypeFontGenerator FontGenerator;
 	ECM ecm;
-	Color colors[] = new Color[8];
+	Color colors[] = new Color[10];
 	int color1id;
 	int color2id;
 	boolean backpressed = false;
@@ -51,18 +59,22 @@ class Game implements ApplicationListener{
 	Preferences prefs;
 	I18NBundle myBundle;
     boolean isPaused = false;
+	GameHelper gameHelper;
+	private final static int requestCode = 1;
 	
 	
-	//Method called once when the application is created
+
 	@Override
 	public void create(){
+		this.gameHelper = launcher.gameHelper;
+		AndroidLauncher.launcher.gameHelper = this.gameHelper;
 		Gdx.input.setCatchBackKey(true);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 480, 800);
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
 		
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 10; i++){
 			colors[i] = new Color();
 		}
 		colors[0].r = 0.0f;
@@ -97,6 +109,14 @@ class Game implements ApplicationListener{
 		colors[7].g = 1.0f;
 		colors[7].b = 1.0f;
 		colors[7].a = 1.0f;
+        colors[8].r = 1.0f;
+        colors[8].g = 0.6f;
+        colors[8].b = 0.0f;
+        colors[8].a = 1.0f;
+        colors[9].r = 1.0f;
+        colors[9].g = 1.0f;
+        colors[9].b = 1.0f;
+        colors[9].a = 1.0f;
 		FileHandle baseFileHandle = Gdx.files.internal("i18n/MyBundle/MyBundle");
         wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
 		myBundle = I18NBundle.createBundle(baseFileHandle);
@@ -107,6 +127,7 @@ class Game implements ApplicationListener{
 		main = new Menu();
 		SetGameState(EGameState.GS_INTRO);
 	}
+
 	//Called after create and on resize
 	@Override
 	public void render(){
@@ -191,4 +212,97 @@ class Game implements ApplicationListener{
 		}
 	}
 
+    @Override
+    public void signIn()
+    {
+        try
+        {
+            launcher.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    gameHelper.beginUserInitiatedSignIn();
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Gdx.app.log("MainActivity", "Log in failed: " + e.getMessage() + ".");
+        }
+    }
+
+    @Override
+    public void signOut()
+    {
+        try
+        {
+            launcher.runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    gameHelper.signOut();
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Gdx.app.log("MainActivity", "Log out failed: " + e.getMessage() + ".");
+        }
+    }
+
+    @Override
+    public void rateGame()
+    {
+        String str = "Your PlayStore Link";
+        launcher.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
+    }
+
+    @Override
+    public void unlockAchievement()
+    {
+        //Games.Achievements.unlock(gameHelper.getApiClient(), getString(R.string.achievement_dum_dum));
+    }
+
+    @Override
+    public void submitScore(int highScore)
+    {
+        if (isSignedIn())
+        {
+            //Games.Leaderboards.submitScore(gameHelper.getApiClient(), getString(R.string.leaderboard_highest), highScore);
+        }
+    }
+
+    @Override
+    public void showAchievement()
+    {
+        if (isSignedIn())
+        {
+            //startActivityForResult(Games.Achievements.getAchievementsIntent(gameHelper.getApiClient(), getString(R.string.achievement_dum_dum)), requestCode);
+        }
+        else
+        {
+            signIn();
+        }
+    }
+
+    @Override
+    public void showScore()
+    {
+        if (isSignedIn())
+        {
+            //startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(), R.string.leaderboard_highest), requestCode);
+        }
+        else
+        {
+            signIn();
+        }
+    }
+
+    @Override
+    public boolean isSignedIn()
+    {
+        return gameHelper.isSignedIn();
+    }
 }
