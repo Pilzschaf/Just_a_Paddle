@@ -110,12 +110,12 @@ class Game implements ApplicationListener, PlayServices{
 		colors[7].b = 1.0f;
 		colors[7].a = 1.0f;
         colors[8].r = 1.0f;
-        colors[8].g = 0.6f;
+        colors[8].g = 0.7f;
         colors[8].b = 0.0f;
         colors[8].a = 1.0f;
-        colors[9].r = 1.0f;
-        colors[9].g = 1.0f;
-        colors[9].b = 1.0f;
+        colors[9].r = 0.5f;
+        colors[9].g = 0.5f;
+        colors[9].b = 0.5f;
         colors[9].a = 1.0f;
 		FileHandle baseFileHandle = Gdx.files.internal("i18n/MyBundle/MyBundle");
         wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));

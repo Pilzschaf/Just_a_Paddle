@@ -2,6 +2,7 @@ package de.pilzschaf.testgame.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -46,15 +47,19 @@ public class AndroidLauncher extends AndroidApplication{
 
     private void initGameHelper() {
         gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
-        gameHelper.enableDebugLog(false);
+        gameHelper.enableDebugLog(true);
 
         GameHelper.GameHelperListener gameHelperListener = new GameHelper.GameHelperListener()
         {
             @Override
-            public void onSignInFailed(){ }
+            public void onSignInFailed(){
+                System.out.println("Sign In Failed");
+            }
 
             @Override
-            public void onSignInSucceeded(){ }
+            public void onSignInSucceeded(){
+                System.out.println("Sign In Succeeded");
+            }
         };
 
         gameHelper.setup(gameHelperListener);

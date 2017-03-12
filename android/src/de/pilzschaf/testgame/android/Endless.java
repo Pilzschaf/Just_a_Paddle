@@ -252,11 +252,11 @@ class Endless {
 			color1 = colorTemp;
 		}
 		else if(game.ecm == ECM.ECM_NORMAL){
-			int rand = (int) (Math.random() * 8);
+			int rand = (int) (Math.random() * 10);
 			color1 = game.colors[rand];
-			int rand2 = (int) (Math.random() * 8);
+			int rand2 = (int) (Math.random() * 10);
 			while (rand2 == rand){
-				rand2 = (int) (Math.random() * 8);
+				rand2 = (int) (Math.random() * 10);
 			}
 			color2 = game.colors[rand2];
 		}

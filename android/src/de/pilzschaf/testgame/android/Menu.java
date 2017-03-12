@@ -44,8 +44,8 @@ class Menu {
 	private long Frame;
 	private int color1id = -1;
 	private int color2id = -1;
-	private Rectangle sensityrect;
-	private Rectangle volumerect;
+	private Rectangle sensitivityRect;
+	private Rectangle volumeRect;
 	private boolean wasVolumeTouchedLastFrame;
 
 	void render(){
@@ -260,7 +260,7 @@ class Menu {
 				game.backpressed = true;
 			}
 		}
-		else if(menuState == MenuState.MS_COLORPICKERENDLESS){
+		else if(menuState == MenuState.MS_COLORPICKERENDLESS || menuState == MenuState.MS_BREAKBLOCK){
 			endlessX = 1000.0f;
 			endlessY = 740.0f;
 			optionX = 1000.0f;
@@ -296,22 +296,30 @@ class Menu {
 					if(color2id != 3)
 						color1id = 3;
 				}
+                else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.82f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 1.0f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.5f){
+                    if(color2id != 4)
+                        color1id = 4;
+                }
 				if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.1f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.28f && (float)Gdx.input.getY() 	   / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
-					if(color2id != 4)
-						color1id = 4;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
 					if(color2id != 5)
 						color1id = 5;
 				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
+				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
 					if(color2id != 6)
 						color1id = 6;
 				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
+				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
 					if(color2id != 7)
 						color1id = 7;
 				}
+				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
+					if(color2id != 8)
+						color1id = 8;
+				}
+                else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.82f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 1.0f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
+                    if(color2id != 9)
+                        color1id = 9;
+                }
 				
 				
 				if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.1f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.28f 	   && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.67f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.77f){
@@ -330,123 +338,38 @@ class Menu {
 					if(color1id != 3)
 						color2id = 3;
 				}
+                else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.82f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 1.0f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.67f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.77f){
+                    if(color1id != 4)
+                        color2id = 4;
+                }
 				if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.1f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.28f && (float)Gdx.input.getY() 	   / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
-					if(color1id != 4)
-						color2id = 4;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
 					if(color1id != 5)
 						color2id = 5;
 				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
+				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
 					if(color1id != 6)
 						color2id = 6;
 				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
+				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
 					if(color1id != 7)
 						color2id = 7;
 				}
+				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
+					if(color1id != 8)
+						color2id = 8;
+				}
+                else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.82f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 01.0f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
+                    if(color1id != 9)
+                        color2id = 9;
+                }
 			}
 			if(color1id != -1 && color2id != -1){
 				game.color1id = color1id;
 				game.color2id = color2id;
-				game.SetGameState(EGameState.GS_ENDLESS);
-				color1id = -1;
-				color2id = -1;
-				Frame = 0;
-			}
-		}
-		else if(menuState == MenuState.MS_BREAKBLOCK){
-			if(Gdx.input.isKeyPressed(Keys.BACK) && !game.backpressed){
-				menuState = MenuState.MS_ROOT;
-				game.backpressed = true;
-			}
-			endlessX = 1000.0f;
-			endlessY = 740.0f;
-			optionX = 1000.0f;
-			optionY = 300.0f;
-			highscoreX = 1000.0f;
-			highscoreY = 200.0f;
-			breakblockX = 1000.0f;
-			breakblockY = 500.0f;
-			ball1.x = -32.0f;
-			ball1.y = breakblockY;
-			ball2.x = -32.0f;
-			ball2.y = endlessY;
-			ball3.x = -32.0f;
-			ball3.y = optionY;
-			if(Gdx.input.justTouched()){
-				if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.1f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.28f 	   && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.5f){
-					if(color2id != 0)
-						color1id = 0;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.5f){
-					if(color2id != 1)
-						color1id = 1;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.5f){
-					if(color2id != 2)
-						color1id = 2;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.5f){
-					if(color2id != 3)
-						color1id = 3;
-				}
-				if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.1f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.28f && (float)Gdx.input.getY() 	   / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
-					if(color2id != 4)
-						color1id = 4;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
-					if(color2id != 5)
-						color1id = 5;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
-					if(color2id != 6)
-						color1id = 6;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.3f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.4f){
-					if(color2id != 7)
-						color1id = 7;
-				}
-				
-				
-				if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.1f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.28f 	   && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.67f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.77f){
-					if(color1id != 0)
-						color2id = 0;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.67f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.77f){
-					if(color1id != 1)
-						color2id = 1;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.67f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.77f){
-					if(color1id != 2)
-						color2id = 2;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.67f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.77f){
-					if(color1id != 3)
-						color2id = 3;
-				}
-				if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.1f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.28f && (float)Gdx.input.getY() 	   / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
-					if(color1id != 4)
-						color2id = 4;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.28f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.46f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
-					if(color1id != 5)
-						color2id = 5;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.46f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.64f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
-					if(color1id != 6)
-						color2id = 6;
-				}
-				else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.64f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.82f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.57f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.67f){
-					if(color1id != 7)
-						color2id = 7;
-				}
-			}
-			if(color1id != -1 && color2id != -1){
-				game.color1id = color1id;
-				game.color2id = color2id;
-				game.SetGameState(EGameState.GS_BREAKBLOCK);
+                if(menuState == MenuState.MS_COLORPICKERENDLESS)
+				    game.SetGameState(EGameState.GS_ENDLESS);
+                else
+                    game.SetGameState(EGameState.GS_BREAKBLOCK);
 				color1id = -1;
 				color2id = -1;
 				Frame = 0;
@@ -475,14 +398,14 @@ class Menu {
 			}
 		}
 		else if(menuState == MenuState.MS_OPTIONS){
-			sensityrect.x = 30.0f + game.accacc * 85.0f;
-			sensityrect.y = 600.0f - 50.0f;
-			volumerect.x = 30.0f + game.volume * Gdx.graphics.getWidth() * 0.37f;
-			volumerect.y = 450.0f - 50.0f;
-			sensityrect.height = 32.0f;
-			sensityrect.width = 32.0f;
-			volumerect.height= 32.0f;
-			volumerect.width = 32.0f;
+			sensitivityRect.x = 30.0f + game.accacc * 85.0f;
+			sensitivityRect.y = 600.0f - 50.0f;
+			volumeRect.x = 30.0f + game.volume * Gdx.graphics.getWidth() * 0.37f;
+			volumeRect.y = 450.0f - 50.0f;
+			sensitivityRect.height = 32.0f;
+			sensitivityRect.width = 32.0f;
+			volumeRect.height= 32.0f;
+			volumeRect.width = 32.0f;
 			endlessX = 1000.0f;
 			endlessY = 740.0f;
 			optionX = 100.0f;
@@ -563,7 +486,7 @@ class Menu {
 			game.batch.begin();
 			game.font2.setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			game.font2.draw(game.batch, game.myBundle.format("selectEyeCancerMode"), 60.0f, 600.0f);
-			game.font2.draw(game.batch, game.myBundle.format("light"), 100.0f, 500.0f);
+			game.font2.draw(game.batch, game.myBundle.format("easy"), 100.0f, 500.0f);
 			game.font2.draw(game.batch, game.myBundle.format("normal"), 100.0f, 400.0f);
 			game.font2.draw(game.batch, game.myBundle.format("nightmare"), 100.0f, 300.0f);
 			game.batch.end();
@@ -578,7 +501,7 @@ class Menu {
 			game.shapeRenderer.end();
 			game.batch.begin();
 			game.font2.draw(game.batch, game.myBundle.format("breakblock")+":   " + game.highscorebb.toString(), 60.0f, 600.0f);
-			game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("light")+":   " + game.highscoreee.toString(), 60.0f, 500.0f);
+			game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("easy")+":   " + game.highscoreee.toString(), 60.0f, 500.0f);
 			game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("normal")+":   " + game.highscoreem.toString(), 60.0f, 400.0f);
 			game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("nightmare")+":   " + game.highscoreen.toString(), 60.0f, 300.0f);
 			game.batch.end();
@@ -590,11 +513,11 @@ class Menu {
 			game.shapeRenderer.rect(50.0f, 450.0f, 270.0f, 40.0f);
 			game.shapeRenderer.rect(50.0f, 600.0f - 40.0f, 380.0f, 10.0f);
 			game.shapeRenderer.rect(50.0f, 450.0f - 40.0f, 380.0f, 10.0f);
-			game.shapeRenderer.rect(volumerect.x, volumerect.y, volumerect.width, volumerect.height);
-			game.shapeRenderer.rect(sensityrect.x, sensityrect.y, sensityrect.width, sensityrect.height);
+			game.shapeRenderer.rect(volumeRect.x, volumeRect.y, volumeRect.width, volumeRect.height);
+			game.shapeRenderer.rect(sensitivityRect.x, sensitivityRect.y, sensitivityRect.width, sensitivityRect.height);
 			game.shapeRenderer.end();
 			game.batch.begin();
-			game.font2.draw(game.batch, game.myBundle.format("sensity")+":", 60.0f, 630.0f);
+			game.font2.draw(game.batch, game.myBundle.format("sensitivity")+":", 60.0f, 630.0f);
 			game.font2.draw(game.batch, game.myBundle.format("volume")+":", 60.0f, 480.0f);
 			game.batch.end();
 		}
@@ -610,10 +533,10 @@ class Menu {
 			game.font2.draw(game.batch, game.myBundle.format("color1")+":", 60.0f, 580.0f);
 			game.font2.draw(game.batch, game.myBundle.format("color2")+":", 60.0f, 380.0f);
 			game.batch.end();
-			for(int i = 0; i < 8; i++){
+			for(int i = 0; i < 10; i++){
 				game.shapeRenderer.begin(ShapeType.Filled);
 				game.shapeRenderer.setColor(game.colors[i]);
-				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%4), 400.0f + 80.0f * ((i)/4), 64.0f, 64.0f);
+				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%5), 400.0f + 80.0f * ((i)/5), 64.0f, 64.0f);
 				game.shapeRenderer.end();
                 //Umrandungen
 				game.shapeRenderer.begin(ShapeType.Line);
@@ -623,14 +546,15 @@ class Menu {
 				else {
 					game.shapeRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
 				}
-				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%4), 400.0f + 80.0f * ((i)/4), 64.0f, 64.0f);
+				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%5), 400.0f + 80.0f * ((i)/5), 64.0f, 64.0f);
 				game.shapeRenderer.end();
 			}
-			for(int i = 0; i < 8; i++){
+			for(int i = 0; i < 10; i++){
 				game.shapeRenderer.begin(ShapeType.Filled);
 				game.shapeRenderer.setColor(game.colors[i]);
-				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%4), 200.0f + 80.0f * ((i)/4), 64.0f, 64.0f);
+				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%5), 200.0f + 80.0f * ((i)/5), 64.0f, 64.0f);
 				game.shapeRenderer.end();
+				//Umrandungen
 				game.shapeRenderer.begin(ShapeType.Line);
 				if(color2id == i){
 					game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -638,15 +562,15 @@ class Menu {
 				else {
 					game.shapeRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
 				}
-				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%4), 200.0f + 80.0f * ((i)/4), 64.0f, 64.0f);
+				game.shapeRenderer.rect( 50.0f + 80.0f * ((i)%5), 200.0f + 80.0f * ((i)/5), 64.0f, 64.0f);
 				game.shapeRenderer.end();
 			}
 			
 		}
 	}
-	void create(Game pgame){
+	void create(Game game){
         wasVolumeTouchedLastFrame = false;
-		game = pgame;
+		this.game = game;
 		ball1 = new Rectangle();
 		ball2 = new Rectangle();
 		ball3 = new Rectangle();
@@ -665,16 +589,16 @@ class Menu {
 		paddle.width = 128.0f;
 		paddle.x = 200.0f;
 		paddle.y = 30.0f;
-		sensityrect = new Rectangle();
-		volumerect = new Rectangle();
-		sensityrect.x = 30.0f + game.accacc * 100.0f;
-		sensityrect.y = 600.0f - 50.0f;
-		volumerect.x = 30.0f + game.volume * 340.0f;
-		volumerect.y = 450.0f - 50.0f;
-		sensityrect.height = 32.0f;
-		sensityrect.width = 32.0f;
-		volumerect.height= 32.0f;
-		volumerect.width = 32.0f;
+		sensitivityRect = new Rectangle();
+		volumeRect = new Rectangle();
+		sensitivityRect.x = 30.0f + this.game.accacc * 100.0f;
+		sensitivityRect.y = 600.0f - 50.0f;
+		volumeRect.x = 30.0f + this.game.volume * 340.0f;
+		volumeRect.y = 450.0f - 50.0f;
+		sensitivityRect.height = 32.0f;
+		sensitivityRect.width = 32.0f;
+		volumeRect.height= 32.0f;
+		volumeRect.width = 32.0f;
 	}
 	void destroy(){
 		
