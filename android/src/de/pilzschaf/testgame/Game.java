@@ -1,4 +1,4 @@
-package de.justapaddle;
+package de.pilzschaf.testgame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -33,12 +33,12 @@ class Game extends ApplicationAdapter {
     Sound wallSound;
     SpriteBatch batch;
     private EGameState state;
-    private de.justapaddle.Intro intro;
-    private de.justapaddle.Endless endless;
-    private de.justapaddle.Menu main;
-    private de.justapaddle.BreakBlock breakBlock;
+    private Intro intro;
+    private Endless endless;
+    private Menu main;
+    private BreakBlock breakBlock;
     FreeTypeFontGenerator FontGenerator;
-    de.justapaddle.ECM ecm;
+    ECM ecm;
     Color colors[] = new Color[10];
     int color1id;
     int color2id;
@@ -68,6 +68,21 @@ class Game extends ApplicationAdapter {
         for(int i = 0; i < 10; i++){
             colors[i] = new Color();
         }
+        resetColors();
+        FileHandle baseFileHandle = Gdx.files.internal("i18n/MyBundle/MyBundle");
+        wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
+        myBundle = I18NBundle.createBundle(baseFileHandle);
+        prefs = Gdx.app.getPreferences("highscore.prefs");
+        intro = new Intro();
+        endless = new Endless();
+        breakBlock = new BreakBlock();
+        main = new Menu();
+        SetGameState(EGameState.GS_INTRO);
+        if(!playServices.isSignedIn())
+            playServices.signIn();
+    }
+
+    void resetColors() {
         colors[0].r = 0.0f;
         colors[0].g = 0.0f;
         colors[0].b = 0.0f;
@@ -108,17 +123,6 @@ class Game extends ApplicationAdapter {
         colors[9].g = 0.5f;
         colors[9].b = 0.5f;
         colors[9].a = 1.0f;
-        FileHandle baseFileHandle = Gdx.files.internal("i18n/MyBundle/MyBundle");
-        wallSound = Gdx.audio.newSound(Gdx.files.internal("wallsound.wav"));
-        myBundle = I18NBundle.createBundle(baseFileHandle);
-        prefs = Gdx.app.getPreferences("highscore.prefs");
-        intro = new Intro();
-        endless = new Endless();
-        breakBlock = new BreakBlock();
-        main = new Menu();
-        SetGameState(EGameState.GS_INTRO);
-        if(!playServices.isSignedIn())
-            playServices.signIn();
     }
 
     //Called after create and on resize

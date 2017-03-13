@@ -1,10 +1,12 @@
-package de.justapaddle;
+package de.pilzschaf.testgame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+
+import de.pilzschaf.testgame.android.R;
 
 enum MenuState{
 	MS_ROOT,
@@ -199,6 +201,7 @@ class Menu {
     }
 
     private void updateRoot() {
+        game.resetColors();
         breakblockX = 100.0f;
         breakblockY = 600.0f;
         endlessX = 100.0f;

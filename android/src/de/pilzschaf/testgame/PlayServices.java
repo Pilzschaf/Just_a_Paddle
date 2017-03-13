@@ -1,5 +1,4 @@
-package de.justapaddle;
-
+package de.pilzschaf.testgame;
 /**
  * Created by pilzschaf on 12.03.17.
  */

@@ -1,4 +1,4 @@
-package de.justapaddle;
+package de.pilzschaf.testgame;
 
 import android.content.Intent;
 import android.net.Uri;
