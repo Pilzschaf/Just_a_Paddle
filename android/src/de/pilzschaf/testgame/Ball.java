@@ -15,19 +15,7 @@ class Ball {
 	void update(){
 		if(delay < 1)
 		{
-			ball.x += velocityX;
-			ball.y += velocityY;
-			if(velocityY > 20.0f)
-				velocityY = 20.0f;
-			if(Math.abs(velocityY)< 5.0f) {
-				if(velocityY < 0)
-					velocityY = -5.0f;
-				else
-					velocityY = 5.0f;
-			}
-			if(velocityX > 10.0f)
-				velocityX = 10.0f;
-			
+			move();
 			if(ball.x > 480.0f - ball.width){
 				ball.x = 480.0f - ball.width;
 				velocityX = velocityX * -1.0f;
@@ -68,17 +56,24 @@ class Ball {
 			delay --;
 		}
 	}
+
+	private void move() {
+		if(velocityY > 20.0f)
+            velocityY = 20.0f;
+		if(Math.abs(velocityY)< 5.0f) {
+            if(velocityY < 0)
+                velocityY = -5.0f;
+            else
+                velocityY = 5.0f;
+        }
+		if(velocityX > 10.0f)
+            velocityX = 10.0f;
+		ball.x += velocityX;
+		ball.y += velocityY;
+	}
+
 	void create(BreakBlock breakBlock){
-		this.breakBlock = breakBlock;
-		exists = true;
-		velocityX = (float)Math.random() * 4.0f -2.0f;
-		velocityY = -5.0f;
-		ball = new Rectangle();
-		ball.x = 480/2;
-		ball.y = 500;
-		ball.width = 32;
-		ball.height = 32;
-		delay = 0;
+		this.create(breakBlock, 0);
 	}
 	void create(BreakBlock breakBlock, int delay){
 		this.breakBlock = breakBlock;

@@ -1,10 +1,11 @@
 package de.pilzschaf.testgame;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -23,6 +24,7 @@ class Endless {
 	private float time = 0.0f;
     private float volume = 1.0f;
     private Sound wallSound;
+
 
     void create(Game game){
         this.game = game;
@@ -47,7 +49,7 @@ class Endless {
     private void prepareColors() {
         color1 = new Color();
         color2 = new Color();
-        if(this.game.ecm == ECM.ECM_LIGHT){
+        if(this.game.eyeCancerMode == EyeCancerMode.ECM_LIGHT){
             color1 = this.game.colors[this.game.color1id];
             color2 = this.game.colors[this.game.color2id];
         }
@@ -69,11 +71,8 @@ class Endless {
         game.shapeRenderer.rect(paddle.x, paddle.y, paddle.width, paddle.height);
         game.shapeRenderer.rect(ball.x, ball.y, ball.width, ball.height);
         game.shapeRenderer.rect(0.0f, 740.0f, 480.0f, 60.0f);
-        if(game.isPaused){
-            game.shapeRenderer.rect(190.0f, 350.0f, 100.0f, 100.0f);
-            game.shapeRenderer.setColor(color1);
-            game.shapeRenderer.rect(205.0f, 365.0f, 25.0f, 70.0f);
-            game.shapeRenderer.rect(250.0f, 365.0f, 25.0f, 70.0f);
+        if(game.pauseButton.isPaused){
+            game.pauseButton.draw(game.shapeRenderer, color1, color2);
         }
         game.shapeRenderer.end();
         game.batch.begin();
@@ -88,76 +87,23 @@ class Endless {
     }
 
     private void move() {
-        if(Gdx.input.justTouched()){
-            if(!game.isPaused){
-                game.isPaused = true;
-            }
-            else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.4f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.6f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.6f ){
-                game.isPaused = false;
-            }
-        }
-        if(!game.isPaused) {
-            if (game.ecm == ECM.ECM_HARD) {
+        game.pauseButton.update();
+        if(!game.pauseButton.isPaused) {
+            if (game.eyeCancerMode == EyeCancerMode.ECM_HARD) {
                 time += Gdx.graphics.getDeltaTime();
                 if (time > 0.17f) {
                     time -= 0.17f;
                     changeColor();
                 }
-
             }
-            paddle.x -= Gdx.input.getAccelerometerX() * game.accacc;
-            if (paddle.x > 480.0f - paddle.width)
-                paddle.x = 480.0f - paddle.width;
-            else if (paddle.x < 0.0f)
-                paddle.x = 0.0f;
-
-            if (ballDirectionY > 22.0f)
-                ballDirectionY = 22.0f;
-            if(ballDirectionX > 10.0f)
-                ballDirectionX = 10.0f;
-            ball.x += ballDirectionX;
-            ball.y += ballDirectionY;
-
-            if (ball.x > 480.0f - ball.width) {
-                    ball.x = 480.0f - ball.width;
-                ballDirectionX = ballDirectionX * -1.0f;
-                changeColor();
-                playWallSound();
-            } else if (ball.x < 0.0f) {
-                ball.x = 0.0f;
-                ballDirectionX = ballDirectionX * -1.0f;
-                changeColor();
-                playWallSound();
-            }
-            if (ball.y > 740.0f - ball.height) {
-                ball.y = 740.0f - ball.height;
-                ballDirectionY = ballDirectionY * -1.0f;
-                points++;
-                ballDirectionX = (float) Math.random() * 14.0f - 7.0f;
-                checkForAchievements();
-                changeColor();
-                playWallSound();
-            } else if (ball.y < paddle.y + paddle.height) {
-                if (ball.x <= paddle.x + paddle.width && ball.x >= paddle.x - ball.width && ball.y > paddle.y) {
-                    ball.y = paddle.y + paddle.height;
-                    ballDirectionY = ballDirectionY * -1.15f;
-                    if (paddle.x != 0.0f && paddle.x != 480.0f - paddle.width) {
-                        ballDirectionX = ballDirectionX + Gdx.input.getAccelerometerX() * game.accacc * 0.5f;
-                    }
-                    changeColor();
-                    playWallSound();
-                }
-                if (ball.y < 0.0f) {
-                    submitHighscore();
-                    ballDirectionY = ballDirectionY * -1.0f;
-                    ballDirectionX = (float) Math.random() * 8.0f - 4.0f;
-                    ballDirectionY = -7.0f;
-                    ball.x = 480 / 2;
-                    ball.y = 700;
-                    points = 0;
-                }
-            }
+            movePaddle();
+            moveBall();
+            handleBallCollisions();
         }
+        handleBackKey();
+    }
+
+    private void handleBackKey() {
         if(Gdx.input.isKeyPressed(Keys.BACK)){
             submitHighscore();
             game.backpressed = true;
@@ -166,11 +112,70 @@ class Endless {
         }
     }
 
+    private void handleBallCollisions() {
+        if (ball.x > 480.0f - ball.width) {
+                ball.x = 480.0f - ball.width;
+            ballDirectionX = ballDirectionX * -1.0f;
+            changeColor();
+            playWallSound();
+        } else if (ball.x < 0.0f) {
+            ball.x = 0.0f;
+            ballDirectionX = ballDirectionX * -1.0f;
+            changeColor();
+            playWallSound();
+        }
+        if (ball.y > 740.0f - ball.height) {
+            ball.y = 740.0f - ball.height;
+            ballDirectionY = ballDirectionY * -1.0f;
+            points++;
+            ballDirectionX = (float) Math.random() * 14.0f - 7.0f;
+            checkForAchievements();
+            changeColor();
+            playWallSound();
+        } else if (ball.y < paddle.y + paddle.height) {
+            if (ball.x <= paddle.x + paddle.width && ball.x >= paddle.x - ball.width && ball.y > paddle.y) {
+                ball.y = paddle.y + paddle.height;
+                ballDirectionY = ballDirectionY * -1.15f;
+                if (paddle.x != 0.0f && paddle.x != 480.0f - paddle.width) {
+                    ballDirectionX = ballDirectionX + Gdx.input.getAccelerometerX() * game.accacc * 0.5f;
+                }
+                changeColor();
+                playWallSound();
+            }
+            if (ball.y < 0.0f) {
+                submitHighscore();
+                ballDirectionY = ballDirectionY * -1.0f;
+                ballDirectionX = (float) Math.random() * 8.0f - 4.0f;
+                ballDirectionY = -7.0f;
+                ball.x = 480 / 2;
+                ball.y = 700;
+                points = 0;
+            }
+        }
+    }
+
+    private void moveBall() {
+        if (ballDirectionY > 22.0f)
+            ballDirectionY = 22.0f;
+        if(ballDirectionX > 10.0f)
+            ballDirectionX = 10.0f;
+        ball.x += ballDirectionX;
+        ball.y += ballDirectionY;
+    }
+
+    private void movePaddle() {
+        paddle.x -= Gdx.input.getAccelerometerX() * game.accacc;
+        if (paddle.x > 480.0f - paddle.width)
+            paddle.x = 480.0f - paddle.width;
+        else if (paddle.x < 0.0f)
+            paddle.x = 0.0f;
+    }
+
     private void checkForAchievements() {
         if(points >= 27){
-            if(game.ecm == ECM.ECM_LIGHT){
+            if(game.eyeCancerMode == EyeCancerMode.ECM_LIGHT){
                 game.playServices.unlockAchievement(R.string.achievement_achieve_27_points_in_easy_mode);
-            } else if(game.ecm == ECM.ECM_NORMAL){
+            } else if(game.eyeCancerMode == EyeCancerMode.ECM_NORMAL){
                 game.playServices.unlockAchievement(R.string.achievement_achieve_27_points_in_normal_mode);
             } else {
                 game.playServices.unlockAchievement(R.string.achievement_achieve_27_points_in_nightmare_mode);
@@ -179,39 +184,13 @@ class Endless {
     }
 
     private void submitHighscore() {
-        if (game.ecm == ECM.ECM_LIGHT) {
-            if (points > game.highscoreee) {
-                game.highscoreee = points;
-                game.prefs.putInteger("highscorebb", game.highscorebb);
-                game.prefs.putInteger("highscoreee", game.highscoreee);
-                game.prefs.putInteger("highscoreem", game.highscoreem);
-                game.prefs.putInteger("highscoreen", game.highscoreen);
-                game.prefs.flush();
-
-            }
+        if (game.eyeCancerMode == EyeCancerMode.ECM_LIGHT) {
             game.playServices.submitScore(R.string.leaderboard_endless_easy, points);
         }
-        if (game.ecm == ECM.ECM_NORMAL) {
-            if (points > game.highscoreem) {
-                game.highscoreem = points;
-                game.prefs.putInteger("highscorebb", game.highscorebb);
-                game.prefs.putInteger("highscoreee", game.highscoreee);
-                game.prefs.putInteger("highscoreem", game.highscoreem);
-                game.prefs.putInteger("highscoreen", game.highscoreen);
-                game.prefs.flush();
-            }
+        if (game.eyeCancerMode == EyeCancerMode.ECM_NORMAL) {
             game.playServices.submitScore(R.string.leaderboard_endless_normal, points);
         }
-        if (game.ecm == ECM.ECM_HARD) {
-            if (points > game.highscoreen) {
-
-                game.highscoreen = points;
-                game.prefs.putInteger("highscorebb", game.highscorebb);
-                game.prefs.putInteger("highscoreee", game.highscoreee);
-                game.prefs.putInteger("highscoreem", game.highscoreem);
-                game.prefs.putInteger("highscoreen", game.highscoreen);
-                game.prefs.flush();
-            }
+        if (game.eyeCancerMode == EyeCancerMode.ECM_HARD) {
             game.playServices.submitScore(R.string.leaderboard_endless_nightmare, points);
         }
     }
@@ -236,19 +215,19 @@ class Endless {
         ballDirectionY = -6.0f;
         color1 = new Color();
         color2 = new Color();
-        if(game.ecm == ECM.ECM_LIGHT){
+        if(game.eyeCancerMode == EyeCancerMode.ECM_LIGHT){
             color1 = game.colors[game.color1id];
             color2 = game.colors[game.color2id];
         }
 	}
 	private void changeColor(){
-		if(game.ecm == ECM.ECM_LIGHT){
+		if(game.eyeCancerMode == EyeCancerMode.ECM_LIGHT){
 			Color colorTemp;
 			colorTemp = color2;
 			color2 = color1;
 			color1 = colorTemp;
 		}
-		else if(game.ecm == ECM.ECM_NORMAL){
+		else if(game.eyeCancerMode == EyeCancerMode.ECM_NORMAL){
 			int rand = (int) (Math.random() * 10);
 			color1 = game.colors[rand];
 			int rand2 = (int) (Math.random() * 10);
@@ -257,7 +236,7 @@ class Endless {
 			}
 			color2 = game.colors[rand2];
 		}
-		else if(game.ecm == ECM.ECM_HARD){
+		else if(game.eyeCancerMode == EyeCancerMode.ECM_HARD){
             color1.r = (float) Math.random();
             color1.g = (float) Math.random();
             color1.b = (float) Math.random();

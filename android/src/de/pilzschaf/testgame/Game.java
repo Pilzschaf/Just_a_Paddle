@@ -9,7 +9,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -38,11 +37,15 @@ class Game extends ApplicationAdapter {
     private Menu main;
     private BreakBlock breakBlock;
     FreeTypeFontGenerator FontGenerator;
-    ECM ecm;
+    EyeCancerMode eyeCancerMode;
     Color colors[] = new Color[10];
     int color1id;
     int color2id;
+
+    //Necessary because isKeyJustPressed doesn't work with back key
+    //see https://github.com/libgdx/libgdx/issues/4363
     boolean backpressed = false;
+
     Integer highscorebb = 0;
     Integer highscoreee = 0;
     Integer highscoreem = 0;
@@ -50,8 +53,8 @@ class Game extends ApplicationAdapter {
     float volume = 0.72f;
     Preferences prefs;
     I18NBundle myBundle;
-    boolean isPaused = false;
     PlayServices playServices;
+    PauseButton pauseButton = new PauseButton();
 
     Game(PlayServices playServices){
         this.playServices = playServices;
@@ -168,7 +171,7 @@ class Game extends ApplicationAdapter {
         prefs.putFloat("volume", volume);
         prefs.flush();
         if(state == EGameState.GS_BREAKBLOCK || state == EGameState.GS_ENDLESS)
-            isPaused = true;
+            pauseButton.isPaused = true;
     }
     //resumes from pause
     @Override
@@ -181,7 +184,7 @@ class Game extends ApplicationAdapter {
 
     }
     void SetGameState(EGameState NewState){
-
+        pauseButton.isPaused = false;
         if(state == EGameState.GS_INTRO){
             intro.destroy();
         }

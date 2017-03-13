@@ -64,7 +64,7 @@ class BreakBlock {
 		}
 		for(int i = 0; i < 32; i++){
 			if(balls[i].exists){
-                if(!game.isPaused) {
+                if(!game.pauseButton.isPaused) {
                     balls[i].update();
                 }
 				game.shapeRenderer.rect(balls[i].ball.x, balls[i].ball.y, balls[i].ball.width, balls[i].ball.height);
@@ -94,8 +94,8 @@ class BreakBlock {
 			}
 		}
         drawLives();
-        if(game.isPaused){
-            drawPauseButton();
+        if(game.pauseButton.isPaused){
+            game.pauseButton.draw(game.shapeRenderer, color1, color2);
         }
 		game.shapeRenderer.end();
         game.batch.begin();
@@ -132,17 +132,9 @@ class BreakBlock {
         game.playServices.submitScore(R.string.leaderboard_break_block, level);
     }
 
-    private void drawPauseButton() {
-        game.shapeRenderer.setColor(color2);
-        game.shapeRenderer.rect(190.0f, 350.0f, 100.0f, 100.0f);
-        game.shapeRenderer.setColor(color1);
-        game.shapeRenderer.rect(205.0f, 365.0f, 25.0f, 70.0f);
-        game.shapeRenderer.rect(250.0f, 365.0f, 25.0f, 70.0f);
-        game.shapeRenderer.setColor(color2);
-    }
-
     private void update() {
-        if(!game.isPaused) {
+		game.pauseButton.update();
+        if(!game.pauseButton.isPaused) {
             paddle.x -= Gdx.input.getAccelerometerX() * game.accacc;
             if (paddle.x > 480.0f - paddle.width)
                 paddle.x = 480.0f - paddle.width;
@@ -152,14 +144,6 @@ class BreakBlock {
     }
 
     private void handleInput() {
-        if(Gdx.input.justTouched()){
-            if(!game.isPaused){
-                game.isPaused = true;
-            }
-            else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.4f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.6f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.4f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.6f ){
-                game.isPaused = false;
-            }
-        }
         if (Gdx.input.isKeyPressed(Keys.BACK)) {
             if (level > game.highscorebb) {
                 game.highscorebb = level;

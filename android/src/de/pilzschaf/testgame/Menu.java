@@ -3,6 +3,7 @@ package de.pilzschaf.testgame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -20,7 +21,7 @@ enum MenuState{
 	MS_ROOTHIGHSCORE,
 	MS_HIGHSCORE
 }
-enum ECM{
+enum EyeCancerMode {
 	ECM_LIGHT,
 	ECM_NORMAL,
 	ECM_HARD
@@ -29,19 +30,15 @@ enum ECM{
 class Menu {
 	
 	private Game game;
-	private MenuState menuState;
-	private Rectangle ball1;
-	private Rectangle ball2;
-	private Rectangle ball3;
-	private Rectangle ball4;
-    private Rectangle ball5;
-	private Rectangle paddle;
+	private MenuState menuState = MenuState.MS_ROOT;
+	private Rectangle[] balls = new Rectangle[5];
+	private Rectangle paddle = new Rectangle();
 	private float endlessX;
 	private float endlessY;
 	private float optionX;
 	private float optionY;
-	private float breakblockX;
-	private float breakblockY;
+	private float breakBlockX;
+	private float breakBlockY;
 	private float highscoreX;
 	private float highscoreY;
     private float achievementsX;
@@ -49,44 +46,47 @@ class Menu {
 	private long Frame;
 	private int color1id = -1;
 	private int color2id = -1;
-	private Rectangle sensitivityRect;
-	private Rectangle volumeRect;
-	private boolean wasVolumeTouchedLastFrame;
+	private Rectangle sensitivityRect = new Rectangle();
+	private Rectangle volumeRect = new Rectangle();
+	private boolean wasVolumeTouchedLastFrame = false;
 
     void create(Game game){
-        wasVolumeTouchedLastFrame = false;
         this.game = game;
-        ball1 = new Rectangle();
-        ball2 = new Rectangle();
-        ball3 = new Rectangle();
-        ball4 = new Rectangle();
-        ball5 = new Rectangle();
-        paddle = new Rectangle();
-        menuState = MenuState.MS_ROOT;
-        ball1.width = 32.0f;
-        ball1.height = 32.0f;
-        ball2.width = 32.0f;
-        ball2.height = 32.0f;
-        ball3.width = 32.0f;
-        ball3.height = 32.0f;
-        ball4.width = 32.0f;
-        ball4.height = 32.0f;
-        ball5.height = 32.0f;
-        ball5.width = 32.0f;
+        initBalls();
         paddle.height = 32.0f;
         paddle.width = 128.0f;
         paddle.x = 200.0f;
         paddle.y = 30.0f;
-        sensitivityRect = new Rectangle();
-        volumeRect = new Rectangle();
-        sensitivityRect.x = 30.0f + this.game.accacc * 100.0f;
-        sensitivityRect.y = 600.0f - 50.0f;
-        volumeRect.x = 30.0f + this.game.volume * 340.0f;
-        volumeRect.y = 450.0f - 50.0f;
         sensitivityRect.height = 32.0f;
         sensitivityRect.width = 32.0f;
         volumeRect.height= 32.0f;
         volumeRect.width = 32.0f;
+    }
+
+    private void initBalls() {
+        for(int i = 0; i < balls.length; i++){
+            balls[i] = new Rectangle();
+        }
+        balls[0].width = 32.0f;
+        balls[0].height = 32.0f;
+        balls[1].width = 32.0f;
+        balls[1].height = 32.0f;
+        balls[2].width = 32.0f;
+        balls[2].height = 32.0f;
+        balls[3].width = 32.0f;
+        balls[3].height = 32.0f;
+        balls[4].height = 32.0f;
+        balls[4].width = 32.0f;
+        balls[0].x = -32.0f;
+        balls[0].y = breakBlockY;
+        balls[1].x = -32.0f;
+        balls[1].y = endlessY;
+        balls[2].x = -32.0f;
+        balls[2].y = optionY;
+        balls[3].x = -32.0f;
+        balls[3].y = highscoreY;
+        balls[4].x = -32.0f;
+        balls[4].y = achievementsY;
     }
 
     void destroy(){
@@ -99,11 +99,19 @@ class Menu {
 	}
 
     private void update() {
+        updatePaddle();
+        updateSelectedMenu();
+    }
+
+    private void updatePaddle() {
         paddle.x -= Gdx.input.getAccelerometerX() * game.accacc;
         if(paddle.x > 480.0f - paddle.width)
             paddle.x = 480.0f - paddle.width;
         else if(paddle.x < 0.0f)
             paddle.x = 0.0f;
+    }
+
+    private void updateSelectedMenu() {
         if(menuState == MenuState.MS_ROOT){
             updateRoot();
         }
@@ -136,61 +144,16 @@ class Menu {
     private void draw() {
         Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.shapeRenderer.begin(ShapeType.Filled);
-        game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        game.shapeRenderer.rect(endlessX - 10.0f, endlessY - 30.0f, 256.0f, 40.0f);
-        game.shapeRenderer.rect(optionX - 10.0f, optionY - 30.0f, 256.0f, 40.0f);
-        game.shapeRenderer.rect(breakblockX - 10.0f, breakblockY - 30.0f, 256.0f, 40.0f);
-        game.shapeRenderer.rect(highscoreX - 10.0f, highscoreY - 30.0f, 256.0f, 40.0f);
-        game.shapeRenderer.rect(achievementsX - 10.0f, achievementsY - 30.0f, 256.0f, 40.0f);
-        game.shapeRenderer.end();
-        game.batch.begin();
-        game.font2.setColor(1.0f, 0.0f, 0.0f, 1.0f);
-        game.font2.draw(game.batch, game.myBundle.format("endless"), endlessX, endlessY);
-        game.font2.draw(game.batch, game.myBundle.format("options"), optionX, optionY);
-        game.font2.draw(game.batch, game.myBundle.format("breakblock"), breakblockX, breakblockY);
-        game.font2.draw(game.batch, game.myBundle.format("highscores"), highscoreX, highscoreY);
-        game.font2.draw(game.batch, game.myBundle.format("achievements"), achievementsX, achievementsY);
-        game.batch.end();
-        game.shapeRenderer.begin(ShapeType.Filled);
-        game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        game.shapeRenderer.rect(ball1.x, ball1.y, ball1.width, ball1.height);
-        game.shapeRenderer.rect(ball2.x, ball2.y, ball2.width, ball2.height);
-        game.shapeRenderer.rect(ball3.x, ball3.y, ball3.width, ball3.height);
-        game.shapeRenderer.rect(ball4.x, ball4.y, ball4.width, ball4.height);
-        game.shapeRenderer.rect(ball5.x, ball5.y, ball5.width, ball5.height);
-        game.shapeRenderer.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-        game.shapeRenderer.end();
+
+        drawSelectedMenu();
+    }
+
+    private void drawSelectedMenu() {
         if(menuState == MenuState.MS_ENDLESS){
-            game.shapeRenderer.begin(ShapeType.Filled);
-            game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-            game.shapeRenderer.rect(50.0f, 600.0f - 30.0f, 296.0f, 40.0f);
-            game.shapeRenderer.rect(90.0f, 500.0f - 30.0f, 256.0f, 40.0f);
-            game.shapeRenderer.rect(90.0f, 400.0f - 30.0f, 256.0f, 40.0f);
-            game.shapeRenderer.rect(90.0f, 300.0f - 30.0f, 256.0f, 40.0f);
-            game.shapeRenderer.end();
-            game.batch.begin();
-            game.font2.setColor(1.0f, 0.0f, 0.0f, 1.0f);
-            game.font2.draw(game.batch, game.myBundle.format("selectEyeCancerMode"), 60.0f, 600.0f);
-            game.font2.draw(game.batch, game.myBundle.format("easy"), 100.0f, 500.0f);
-            game.font2.draw(game.batch, game.myBundle.format("normal"), 100.0f, 400.0f);
-            game.font2.draw(game.batch, game.myBundle.format("nightmare"), 100.0f, 300.0f);
-            game.batch.end();
+            drawEndless();
         }
         else if(menuState == MenuState.MS_HIGHSCORE){
-            game.shapeRenderer.begin(ShapeType.Filled);
-            game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-            game.shapeRenderer.rect(50.0f, 600.0f - 30.0f, 380.0f, 40.0f);
-            game.shapeRenderer.rect(50.0f, 500.0f - 30.0f, 380.0f, 40.0f);
-            game.shapeRenderer.rect(50.0f, 400.0f - 30.0f, 380.0f, 40.0f);
-            game.shapeRenderer.rect(50.0f, 300.0f - 30.0f, 380.0f, 40.0f);
-            game.shapeRenderer.end();
-            game.batch.begin();
-            game.font2.draw(game.batch, game.myBundle.format("breakblock")+":   " + ""/*game.highscorebb.toString()*/, 60.0f, 600.0f);
-            game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("easy")+":   " + ""/*game.highscoreee.toString()*/, 60.0f, 500.0f);
-            game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("normal")+":   " + ""/*game.highscoreem.toString()*/, 60.0f, 400.0f);
-            game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("nightmare")+":   " + ""/*game.highscoreen.toString()*/, 60.0f, 300.0f);
-            game.batch.end();
+            drawHighscore();
         }
         else if(menuState == MenuState.MS_OPTIONS){
             drawOptions();
@@ -198,12 +161,74 @@ class Menu {
         else if(menuState == MenuState.MS_COLORPICKERENDLESS || menuState == MenuState.MS_BREAKBLOCK){
             drawColorPicker();
         }
+        else {
+            drawDefaultElements();
+        }
+    }
+
+    private void drawDefaultElements() {
+        game.shapeRenderer.begin(ShapeType.Filled);
+        game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        game.shapeRenderer.rect(endlessX - 10.0f, endlessY - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.rect(optionX - 10.0f, optionY - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.rect(breakBlockX - 10.0f, breakBlockY - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.rect(highscoreX - 10.0f, highscoreY - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.rect(achievementsX - 10.0f, achievementsY - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.end();
+        game.batch.begin();
+        game.font2.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+        game.font2.draw(game.batch, game.myBundle.format("endless"), endlessX, endlessY);
+        game.font2.draw(game.batch, game.myBundle.format("options"), optionX, optionY);
+        game.font2.draw(game.batch, game.myBundle.format("breakblock"), breakBlockX, breakBlockY);
+        game.font2.draw(game.batch, game.myBundle.format("highscores"), highscoreX, highscoreY);
+        game.font2.draw(game.batch, game.myBundle.format("achievements"), achievementsX, achievementsY);
+        game.batch.end();
+        game.shapeRenderer.begin(ShapeType.Filled);
+        game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        for (Rectangle ball : balls) {
+            game.shapeRenderer.rect(ball.x, ball.y, ball.width, ball.height);
+        }
+        game.shapeRenderer.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+        game.shapeRenderer.end();
+    }
+
+    private void drawHighscore() {
+        game.shapeRenderer.begin(ShapeType.Filled);
+        game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        game.shapeRenderer.rect(50.0f, 600.0f - 30.0f, 380.0f, 40.0f);
+        game.shapeRenderer.rect(50.0f, 500.0f - 30.0f, 380.0f, 40.0f);
+        game.shapeRenderer.rect(50.0f, 400.0f - 30.0f, 380.0f, 40.0f);
+        game.shapeRenderer.rect(50.0f, 300.0f - 30.0f, 380.0f, 40.0f);
+        game.shapeRenderer.end();
+        game.batch.begin();
+        game.font2.draw(game.batch, game.myBundle.format("breakblock")+":   " + ""/*game.highscorebb.toString()*/, 60.0f, 600.0f);
+        game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("easy")+":   " + ""/*game.highscoreee.toString()*/, 60.0f, 500.0f);
+        game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("normal")+":   " + ""/*game.highscoreem.toString()*/, 60.0f, 400.0f);
+        game.font2.draw(game.batch, game.myBundle.format("endless")+" " + game.myBundle.format("nightmare")+":   " + ""/*game.highscoreen.toString()*/, 60.0f, 300.0f);
+        game.batch.end();
+    }
+
+    private void drawEndless() {
+        game.shapeRenderer.begin(ShapeType.Filled);
+        game.shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        game.shapeRenderer.rect(50.0f, 600.0f - 30.0f, 296.0f, 40.0f);
+        game.shapeRenderer.rect(90.0f, 500.0f - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.rect(90.0f, 400.0f - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.rect(90.0f, 300.0f - 30.0f, 256.0f, 40.0f);
+        game.shapeRenderer.end();
+        game.batch.begin();
+        game.font2.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+        game.font2.draw(game.batch, game.myBundle.format("selectEyeCancerMode"), 60.0f, 600.0f);
+        game.font2.draw(game.batch, game.myBundle.format("easy"), 100.0f, 500.0f);
+        game.font2.draw(game.batch, game.myBundle.format("normal"), 100.0f, 400.0f);
+        game.font2.draw(game.batch, game.myBundle.format("nightmare"), 100.0f, 300.0f);
+        game.batch.end();
     }
 
     private void updateRoot() {
         game.resetColors();
-        breakblockX = 100.0f;
-        breakblockY = 600.0f;
+        breakBlockX = 100.0f;
+        breakBlockY = 600.0f;
         endlessX = 100.0f;
         endlessY = 500.0f;
         optionX = 100.0f;
@@ -212,16 +237,6 @@ class Menu {
         highscoreY = 300.0f;
         achievementsX = 100.0f;
         achievementsY = 200.0f;
-        ball1.x = -32.0f;
-        ball1.y = breakblockY;
-        ball2.x = -32.0f;
-        ball2.y = endlessY;
-        ball3.x = -32.0f;
-        ball3.y = optionY;
-        ball4.x = -32.0f;
-        ball4.y = highscoreY;
-        ball5.x = -32.0f;
-        ball5.y = achievementsY;
 
         if(Gdx.input.isTouched()){
             if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.15f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.75f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.22f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.29f ){
@@ -253,32 +268,25 @@ class Menu {
         optionY = 400.0f;
         highscoreX = 1000.0f;
         highscoreY = 300.0f;
-        breakblockX = 1000.0f;
-        breakblockY = 500.0f;
+        breakBlockX = 1000.0f;
+        breakBlockY = 500.0f;
         achievementsX = 1000.0f;
         achievementsY = 200.0f;
-        ball1.x = -32.0f;
-        ball1.y = breakblockY;
-        ball2.x = -32.0f;
-        ball2.y = endlessY;
-        ball3.x = -32.0f;
-        ball3.y = optionY;
-
         if(Gdx.input.justTouched()){
             if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.15f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.75f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.35f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.42f ){
                 menuState = MenuState.MS_COLORPICKERENDLESS;
                 Frame = 0;
-                game.ecm = ECM.ECM_LIGHT;
+                game.eyeCancerMode = EyeCancerMode.ECM_LIGHT;
             }
             else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.15f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.75f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.47f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.55f ){
                 Frame = 0;
-                game.ecm = ECM.ECM_NORMAL;
+                game.eyeCancerMode = EyeCancerMode.ECM_NORMAL;
                 game.SetGameState(EGameState.GS_ENDLESS);
             }
             else if((float)Gdx.input.getX() / Gdx.graphics.getWidth() > 0.15f && (float)Gdx.input.getX() / Gdx.graphics.getWidth() < 0.75f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() > 0.6f && (float)Gdx.input.getY() / Gdx.graphics.getHeight() < 0.68f ){
                 Frame = 0;
                 game.SetGameState(EGameState.GS_ENDLESS);
-                game.ecm = ECM.ECM_HARD;
+                game.eyeCancerMode = EyeCancerMode.ECM_HARD;
             }
         }
         if(Gdx.input.isKeyPressed(Keys.BACK)&& !game.backpressed){
@@ -292,26 +300,26 @@ class Menu {
         endlessY = 500.0f;
         optionX = 100.0f;
         optionY = 400.0f;
-        breakblockX = 100.0f;
-        breakblockY = 600.0f;
+        breakBlockX = 100.0f;
+        breakBlockY = 600.0f;
         highscoreX = 100.0f;
         highscoreY = 300.0f;
         achievementsX = 100.0f;
         achievementsY = 200.0f;
         Frame ++;
-        ball1.x = -32.0f + Frame * 20.0f;
-        ball1.y = breakblockY - 30.0f;
-        ball2.x = -32.0f;
-        ball2.y = endlessY - 30.0f;
-        ball3.x = -32.0f + Frame * 20.0f;
-        ball3.y = optionY - 30.0f;
-        ball4.x = -32.0f + Frame * 20.0f;
-        ball4.y = highscoreY - 30.0f;
-        ball5.x = -32.0f + Frame * 20.0f;
-        ball5.y = achievementsY - 30.0f;
+        balls[0].x = -32.0f + Frame * 20.0f;
+        balls[0].y = breakBlockY - 30.0f;
+        balls[1].x = -32.0f;
+        balls[1].y = endlessY - 30.0f;
+        balls[2].x = -32.0f + Frame * 20.0f;
+        balls[2].y = optionY - 30.0f;
+        balls[3].x = -32.0f + Frame * 20.0f;
+        balls[3].y = highscoreY - 30.0f;
+        balls[4].x = -32.0f + Frame * 20.0f;
+        balls[4].y = achievementsY - 30.0f;
         if(Frame > 4){
             optionX = 100.0f + 20.0f * (Frame - 5.0f);
-            breakblockX = 100.0f + 20.0f * (Frame - 5.0f);
+            breakBlockX = 100.0f + 20.0f * (Frame - 5.0f);
             highscoreX = 100.0f + 20.0f * (Frame - 5.0f);
             achievementsX = 100.0f + 20.0f * (Frame - 5.0f);
         }
@@ -331,23 +339,23 @@ class Menu {
         endlessY = 500.0f;
         optionX = 100.0f;
         optionY = 400.0f;
-        breakblockX = 100.0f;
-        breakblockY = 600.0f;
+        breakBlockX = 100.0f;
+        breakBlockY = 600.0f;
         highscoreX = 100.0f;
         highscoreY = 300.0f;
         achievementsX = 100.0f;
         achievementsY = 200.0f;
         Frame ++;
-        ball2.x = -32.0f + Frame * 20.0f;
-        ball1.y = breakblockY - 30.0f;
-        ball1.x = -32.0f;
-        ball2.y = endlessY - 30.0f;
-        ball3.x = -32.0f + Frame * 20.0f;
-        ball3.y = optionY - 30.0f;
-        ball4.x = -32.0f + Frame * 20.0f;
-        ball4.y = highscoreY - 30.0f;
-        ball5.x = -32.0f + Frame * 20.0f;
-        ball5.y = achievementsY - 30.0f;
+        balls[0].x = -32.0f;
+        balls[0].y = breakBlockY - 30.0f;
+        balls[1].x = -32.0f + Frame * 20.0f;
+        balls[1].y = endlessY - 30.0f;
+        balls[2].x = -32.0f + Frame * 20.0f;
+        balls[2].y = optionY - 30.0f;
+        balls[3].x = -32.0f + Frame * 20.0f;
+        balls[3].y = highscoreY - 30.0f;
+        balls[4].x = -32.0f + Frame * 20.0f;
+        balls[4].y = achievementsY - 30.0f;
         if(Frame > 4){
             optionX = 100.0f + 20.0f * (Frame - 5.0f);
             endlessX = 100.0f + 20.0f * (Frame - 5.0f);
@@ -355,9 +363,9 @@ class Menu {
             achievementsX = 100.0f + 20.0f * (Frame -5.0f);
         }
         if(Frame > 30){
-            breakblockY = 600.0f + 10.0f * (Frame - 30.0f);
-            if(breakblockY > 740.0f)
-                breakblockY = 740.0f;
+            breakBlockY = 600.0f + 10.0f * (Frame - 30.0f);
+            if(breakBlockY > 740.0f)
+                breakBlockY = 740.0f;
         }
         if(Frame > 65){
             menuState = MenuState.MS_BREAKBLOCK;
@@ -370,26 +378,26 @@ class Menu {
         endlessY = 500.0f;
         optionX = 100.0f;
         optionY = 400.0f;
-        breakblockX = 100.0f;
-        breakblockY = 600.0f;
+        breakBlockX = 100.0f;
+        breakBlockY = 600.0f;
         highscoreX = 100.0f;
         highscoreY = 300.0f;
         achievementsX = 100.0f;
         achievementsY = 200.0f;
         Frame ++;
-        ball1.x = -32.0f + Frame * 20.0f;
-        ball1.y = breakblockY - 30.0f;
-        ball3.x = -32.0f;
-        ball2.y = endlessY - 30.0f;
-        ball2.x = -32.0f + Frame * 20.0f;
-        ball3.y = optionY - 30.0f;
-        ball4.x = -32.0f + Frame * 20.0f;
-        ball4.y = highscoreY - 30.0f;
-        ball5.x = -32.0f + Frame * 20.0f;
-        ball5.y = achievementsY - 30.0f;
+        balls[0].x = -32.0f + Frame * 20.0f;
+        balls[0].y = breakBlockY - 30.0f;
+        balls[1].x = -32.0f + Frame * 20.0f;
+        balls[1].y = endlessY - 30.0f;
+        balls[2].x = -32.0f;
+        balls[2].y = optionY - 30.0f;
+        balls[3].x = -32.0f + Frame * 20.0f;
+        balls[3].y = highscoreY - 30.0f;
+        balls[4].x = -32.0f + Frame * 20.0f;
+        balls[4].y = achievementsY - 30.0f;
         if(Frame > 4){
             endlessX = 100.0f + 20.0f * (Frame - 5.0f);
-            breakblockX = 100.0f + 20.0f * (Frame - 5.0f);
+            breakBlockX = 100.0f + 20.0f * (Frame - 5.0f);
             highscoreX = 100.0f + 20.0f * (Frame - 5.0f);
             achievementsX = 100.0f + 20.0f * (Frame - 5.0f);
         }
@@ -409,26 +417,26 @@ class Menu {
         endlessY = 500.0f;
         optionX = 100.0f;
         optionY = 400.0f;
-        breakblockX = 100.0f;
-        breakblockY = 600.0f;
+        breakBlockX = 100.0f;
+        breakBlockY = 600.0f;
         highscoreX = 100.0f;
         highscoreY = 300.0f;
         achievementsX = 100.0f;
         achievementsY = 200.0f;
         Frame ++;
-        ball1.x = -32.0f + Frame * 20.0f;
-        ball1.y = breakblockY - 30.0f;
-        ball4.x = -32.0f;
-        ball2.y = endlessY - 30.0f;
-        ball2.x = -32.0f + Frame * 20.0f;
-        ball3.y = optionY - 30.0f;
-        ball3.x = -32.0f + Frame * 20.0f;
-        ball4.y = highscoreY - 30.0f;
-        ball5.x = -32.0f + Frame * 20.0f;
-        ball5.y = achievementsY - 30.0f;
+        balls[0].x = -32.0f + Frame * 20.0f;
+        balls[0].y = breakBlockY - 30.0f;
+        balls[1].x = -32.0f + Frame * 20.0f;
+        balls[1].y = endlessY - 30.0f;
+        balls[2].x = -32.0f + Frame * 20.0f;
+        balls[2].y = optionY - 30.0f;
+        balls[3].x = -32.0f;
+        balls[3].y = highscoreY - 30.0f;
+        balls[4].x = -32.0f + Frame * 20.0f;
+        balls[4].y = achievementsY - 30.0f;
         if(Frame > 4){
             endlessX = 100.0f + 20.0f * (Frame - 5.0f);
-            breakblockX = 100.0f + 20.0f * (Frame - 5.0f);
+            breakBlockX = 100.0f + 20.0f * (Frame - 5.0f);
             optionX = 100.0f + 20.0f * (Frame - 5.0f);
             achievementsX = 100.0f + 20.0f * (Frame - 5.0f);
         }
@@ -450,16 +458,10 @@ class Menu {
         optionY = 400.0f;
         highscoreX = 1000.0f;
         highscoreY = 300.0f;
-        breakblockX = 1000.0f;
-        breakblockY = 600.0f;
+        breakBlockX = 1000.0f;
+        breakBlockY = 600.0f;
         achievementsX = 1000.0f;
         achievementsY = 200.0f;
-        ball1.x = -32.0f;
-        ball1.y = breakblockY;
-        ball2.x = -32.0f;
-        ball2.y = endlessY;
-        ball3.x = -32.0f;
-        ball3.y = optionY;
         if(Gdx.input.isKeyPressed(Keys.BACK) && !game.backpressed){
             menuState = MenuState.MS_ROOT;
             game.backpressed = true;
@@ -568,18 +570,10 @@ class Menu {
         optionY = 400.0f;
         highscoreX = 100.0f;
         highscoreY = 740.0f;
-        breakblockX = 1000.0f;
-        breakblockY = 600.0f;
+        breakBlockX = 1000.0f;
+        breakBlockY = 600.0f;
         achievementsX = 1000.0f;
         achievementsY = 200.0f;
-        ball1.x = -32.0f;
-        ball1.y = breakblockY;
-        ball2.x = -32.0f;
-        ball2.y = endlessY;
-        ball3.x = -32.0f;
-        ball3.y = optionY;
-        ball4.x = -32.0f;
-        ball4.y = highscoreY;
         if(Gdx.input.isKeyPressed(Keys.BACK)&& !game.backpressed){
             menuState = MenuState.MS_ROOT;
             game.backpressed = true;
@@ -615,18 +609,10 @@ class Menu {
         optionY = 740.0f;
         highscoreX = 1000.0f;
         highscoreY = 740.0f;
-        breakblockX = 1000.0f;
-        breakblockY = 500.0f;
+        breakBlockX = 1000.0f;
+        breakBlockY = 500.0f;
         achievementsX = 1000.0f;
         achievementsY = 200.0f;
-        ball1.x = -32.0f;
-        ball1.y = breakblockY;
-        ball2.x = -32.0f;
-        ball2.y = endlessY;
-        ball3.x = -32.0f;
-        ball3.y = optionY;
-        ball4.x = -32.0f;
-        ball4.y = highscoreY;
         if(Gdx.input.isKeyPressed(Keys.BACK)&& !game.backpressed){
             menuState = MenuState.MS_ROOT;
             game.backpressed = true;
