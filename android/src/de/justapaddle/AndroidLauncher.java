@@ -102,34 +102,35 @@ public class AndroidLauncher extends AndroidApplication implements PlayServices 
 	@Override
 	public void rateGame()
 	{
-		String str = "Your PlayStore Link";
+		String str = "https://play.google.com/store/apps/details?id=de.pilzschaf.testgame.android";
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
 	}
 
 	@Override
-	public void unlockAchievement()
+	public void unlockAchievement(int resID)
 	{
+		// res ID for example R.string.achievement_dum_dum
 		Games.Achievements.unlock(gameHelper.getApiClient(),
-				getString(R.string.achievement_dum_dum));
+				getString(resID));
 	}
 
 	@Override
-	public void submitScore(int highScore)
+	public void submitScore(int resID, int highScore)
 	{
+		// res ID for example R.string.leaderboard_highest
 		if (isSignedIn())
 		{
 			Games.Leaderboards.submitScore(gameHelper.getApiClient(),
-					getString(R.string.leaderboard_highest), highScore);
+					getString(resID), highScore);
 		}
 	}
 
 	@Override
-	public void showAchievement()
+	public void showAchievements()
 	{
 		if (isSignedIn())
 		{
-			/*startActivityForResult(Games.Achievements.getAchievementsIntent(gameHelper.getApiClient(),
-					getString(R.string.achievement_dum_dum)), requestCode);*/
+			startActivityForResult(Games.Achievements.getAchievementsIntent(gameHelper.getApiClient()), requestCode);
 		}
 		else
 		{
@@ -138,12 +139,12 @@ public class AndroidLauncher extends AndroidApplication implements PlayServices 
 	}
 
 	@Override
-	public void showScore()
+	public void showScore(int resID)
 	{
 		if (isSignedIn())
 		{
 			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(gameHelper.getApiClient(),
-					getString(R.string.leaderboard_highest)), requestCode);
+					getString(resID)), requestCode);
 		}
 		else
 		{

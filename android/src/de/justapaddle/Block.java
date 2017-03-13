@@ -17,49 +17,43 @@ class Block {
 		this.hardness = hardness;
 	}
 	void collide(Ball ball){
-		if(ball.ball.x + 32.0f >= block.x && ball.ball.x <= block.x + 100.0f && ball.ball.y + 32.0f > block.y && ball.ball.y < block.y + 32.0f){
+		if(ball.ball.x + 32.0f > block.x && ball.ball.x < block.x + 100.0f && ball.ball.y + 32.0f > block.y && ball.ball.y < block.y + 32.0f){
 			ball.breakBlock.swapColors();
-			float fDistLeft = Math.abs(ball.ball.x + 32.0f) - block.x;		//Stimmt
-			float fDistRight = Math.abs(ball.ball.x) - block.x + 100.0f;	//Stimmt
-			float fDistTop = Math.abs(ball.ball.y + 32.0f) - block.y;		//Stimmt
-			float fDistBottom = Math.abs(ball.ball.y) - block.y + 32.0f;	//Stimmt
+			float fDistLeft = Math.abs(ball.ball.x + 32.0f - block.x);
+			float fDistRight = Math.abs(ball.ball.x - block.x - 100.0f);
+			float fDistTop = Math.abs(ball.ball.y + 32.0f - block.y);
+			float fDistBottom = Math.abs(ball.ball.y - block.y - 32.0f);
 			float fMinDist = Math.min(Math.min(fDistLeft, fDistTop), Math.min(fDistRight, fDistBottom));
 			if(fMinDist == fDistLeft){
+				//Left
 				ball.velocityX = ball.velocityX * -0.8f;
-				ball.ball.x = block.x - 32.0f;
-				System.out.println("Left");
+				ball.ball.x = block.x - 33.0f;
 			}
 			else if(fMinDist == fDistRight){
+				//Right
 				ball.velocityX = ball.velocityX * -0.8f;
-				ball.ball.x = block.x + 132.0f;
-				System.out.println("Right");
+				ball.ball.x = block.x + 101.0f;
 			}
 			else if(fMinDist == fDistTop){
 				//Bottom
-				ball.velocityY = ball.velocityY * -1.0f;		
-				ball.ball.y = block.y - 32.0f;
-				System.out.println("Top");
+				ball.velocityY = ball.velocityY * -0.9f;
+				ball.ball.y = block.y - 33.0f;
 			}
 			else if(fMinDist == fDistBottom){
 				//Top
-				ball.velocityY = ball.velocityY * -1.0f;
-				ball.ball.y = block.y + 32.0f;
-				System.out.println("Bottom");
+				ball.velocityY = ball.velocityY * -0.9f;
+				ball.ball.y = block.y + 33.0f;
 			}
 			hardness --;
 			ball.breakBlock.game.wallSound.play(ball.breakBlock.game.volume);
 			if(hardness < 1){
 				exists = false;
 				double random = Math.random();
-				if(random < 0.1){
-					int temp = 0;
-					while(ball.breakBlock.balls[temp].exists){
-						temp ++;
-					}
-					ball.breakBlock.balls[temp].create(ball.breakBlock);
+				if(random < 0.11){
+					ball.breakBlock.addNewBall();
 				}
-				else if(random < 0.14){
-					ball.breakBlock.lives ++;
+				else if(random < 0.15){
+					ball.breakBlock.addNewLife();
 				}
 			}
 			

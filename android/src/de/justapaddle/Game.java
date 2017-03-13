@@ -51,7 +51,7 @@ class Game extends ApplicationAdapter {
     Preferences prefs;
     I18NBundle myBundle;
     boolean isPaused = false;
-    public static PlayServices playServices;
+    PlayServices playServices;
 
     Game(PlayServices playServices){
         this.playServices = playServices;

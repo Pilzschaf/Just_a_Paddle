@@ -19,6 +19,12 @@ class Ball {
 			ball.y += velocityY;
 			if(velocityY > 20.0f)
 				velocityY = 20.0f;
+			if(Math.abs(velocityY)< 5.0f) {
+				if(velocityY < 0)
+					velocityY = -5.0f;
+				else
+					velocityY = 5.0f;
+			}
 			if(velocityX > 10.0f)
 				velocityX = 10.0f;
 			
@@ -41,7 +47,7 @@ class Ball {
 			else if(ball.y < breakBlock.paddle.y + breakBlock.paddle.height){
 				if(ball.x <= breakBlock.paddle.x + breakBlock.paddle.width && ball.x >= breakBlock.paddle.x - ball.width && ball.y > breakBlock.paddle.y){
 					ball.y = breakBlock.paddle.y + breakBlock.paddle.height;
-					velocityY = velocityY * -1.1f;
+					velocityY = velocityY * (-1.0f * (1.15f + (breakBlock.level/27)));
 					if(breakBlock.paddle.x != 0.0f && breakBlock.paddle.x != 480.0f - breakBlock.paddle.width){
 						velocityX = velocityX + Gdx.input.getAccelerometerX() * breakBlock.game.accacc * 0.5f;
 					}

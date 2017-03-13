@@ -9,9 +9,9 @@ public interface PlayServices
     public void signIn();
     public void signOut();
     public void rateGame();
-    public void unlockAchievement();
-    public void submitScore(int highScore);
-    public void showAchievement();
-    public void showScore();
+    public void unlockAchievement(int resID);
+    public void submitScore(int resID, int highScore);
+    public void showAchievements();
+    public void showScore(int resID);
     public boolean isSignedIn();
 }

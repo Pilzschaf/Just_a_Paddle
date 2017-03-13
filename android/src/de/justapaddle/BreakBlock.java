@@ -14,9 +14,9 @@ class BreakBlock {
 	private Color color2;
 	Rectangle paddle;
 	private Rectangle liveSlot;
-	int lives;
-	private int level;
-	Ball balls[] = new Ball[32];
+    private int lives;
+	int level;
+	private Ball balls[] = new Ball[32];
 	Block blocks[] = new Block[32];
 	
 	void create(Game game){
@@ -33,7 +33,7 @@ class BreakBlock {
 		color2 = new Color();
 		color1 = this.game.colors[this.game.color1id];
 		color2 = this.game.colors[this.game.color2id];
-		lives = 3;
+		lives = 1;
 		for(int i = 0; i < 32; i++){
 			balls[i] = new Ball();
 			blocks[i] = new Block();
@@ -44,7 +44,7 @@ class BreakBlock {
 	}
 	void render(){
         handleInput();
-        move();
+        update();
         Gdx.gl.glClearColor(color1.r, color1.g, color1.b, color1.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		game.shapeRenderer.begin(ShapeType.Filled);
@@ -75,19 +75,15 @@ class BreakBlock {
 				lives --;
 			}
 			else{
-				if(level > game.highscorebb){
-					game.highscorebb = level;
-					game.prefs.putInteger("highscorebb", game.highscorebb);
-					game.prefs.putInteger("highscoreee", game.highscoreee);
-					game.prefs.putInteger("highscoreem", game.highscoreem);
-					game.prefs.putInteger("highscoreen", game.highscoreen);
-					game.prefs.flush();
-				}
+                submitHighscore();
 				game.SetGameState(EGameState.GS_MAIN);
 			}
 		}
 		if(blockCounter < 1){
 			level ++;
+            if(level > 10){
+                game.playServices.unlockAchievement(R.string.achievement_play_all_unique_break_block_levels);
+            }
 			createLevel(level);
 			for(int i = 0; i < 32; i++){
 				if(balls[i].exists){
@@ -95,15 +91,44 @@ class BreakBlock {
 				}
 			}
 		}
-		game.shapeRenderer.setColor(color1);
-		for(int i = 0; i < lives; i++){
-			game.shapeRenderer.rect(10.0f + 78.0f * i, 750.0f, liveSlot.width, liveSlot.height);
-		}
+        drawLives();
         if(game.isPaused){
             drawPauseButton();
         }
 		game.shapeRenderer.end();
+        game.batch.begin();
+        game.Font.setColor(color1);
+        if(level < 10){
+            game.Font.draw(game.batch, Integer.toString(level), 220.0f, 810.0f);
+        }
+        else{
+            game.Font.draw(game.batch, Integer.toString(level), 200.0f, 810.0f);
+        }
+        game.batch.end();
 	}
+
+    private void drawLives() {
+        game.shapeRenderer.setColor(color1);
+        for(int i = 0; i < lives; i++){
+            if(i < 2) {
+                game.shapeRenderer.rect(10.0f + 78.0f * i, 750.0f, liveSlot.width, liveSlot.height);
+            } else {
+                game.shapeRenderer.rect(10.0f + 78.0f * (i + 2), 750.0f, liveSlot.width, liveSlot.height);
+            }
+        }
+    }
+
+    private void submitHighscore() {
+        if(level > game.highscorebb){
+            game.highscorebb = level;
+            game.prefs.putInteger("highscorebb", game.highscorebb);
+            game.prefs.putInteger("highscoreee", game.highscoreee);
+            game.prefs.putInteger("highscoreem", game.highscoreem);
+            game.prefs.putInteger("highscoreen", game.highscoreen);
+            game.prefs.flush();
+        }
+        game.playServices.submitScore(R.string.leaderboard_break_block, level);
+    }
 
     private void drawPauseButton() {
         game.shapeRenderer.setColor(color2);
@@ -114,10 +139,8 @@ class BreakBlock {
         game.shapeRenderer.setColor(color2);
     }
 
-    private void move() {
+    private void update() {
         if(!game.isPaused) {
-            if (lives > 6)
-                lives = 6;
             paddle.x -= Gdx.input.getAccelerometerX() * game.accacc;
             if (paddle.x > 480.0f - paddle.width)
                 paddle.x = 480.0f - paddle.width;
@@ -143,6 +166,26 @@ class BreakBlock {
             }
             game.backpressed = true;
             game.SetGameState(EGameState.GS_MAIN);
+        }
+    }
+
+    void addNewBall(){
+        int temp = 0;
+        while(this.balls[temp].exists){
+            temp ++;
+        }
+        this.balls[temp].create(this);
+        if(temp >= 4)
+            game.playServices.unlockAchievement(R.string.achievement_play_with_5_balls_at_the_same_time);
+    }
+
+    void addNewLife(){
+        this.lives ++;
+        if(this.lives > 4){
+            this.lives = 4;
+        }
+        if(this.lives == 4){
+            game.playServices.unlockAchievement(R.string.achievement_play_with_4_extra_lives);
         }
     }
 
@@ -191,20 +234,24 @@ class BreakBlock {
 			createRow("2222", 3);
 			createRow("1111", 4);
 			break;
-		case 7:
+        case 7:
+            createRow("3333", 1);
+            createRow("    ", 2);
+            createRow("5555", 3);
+            createRow("    ", 4);
+            createRow("    ", 5);
+            createRow("5555", 6);
+            break;
+		case 8:
 			createRow("3  3", 1);
 			createRow(" 33 ", 2);
 			createRow(" 33 ", 3);
 			createRow("3  3", 4);
 			break;
-		case 8:
+		case 9:
 			createRow("5555", 1);
 			createRow("5115", 2);
 			createRow("5115", 3);
-			createRow("5555", 4);
-			break;
-		case 9:
-			createRow("5555", 1);
 			createRow("5555", 4);
 			break;
 		case 10:
