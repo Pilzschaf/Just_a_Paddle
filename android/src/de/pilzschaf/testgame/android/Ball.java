@@ -25,18 +25,18 @@ public class Ball {
 			if(ball.x > 480.0f - ball.width){
 				ball.x = 480.0f - ball.width;
 				velocityX = velocityX * -1.0f;
-				breakblock.wallsound.play(0.7f);
+				playSound();
 			}
 			else if(ball.x < 0.0f){
 				ball.x = 0.0f;
 				velocityX = velocityX * -1.0f;
-				breakblock.wallsound.play(0.7f);
+				playSound();
 			}
 			if(ball.y > 740.0f - ball.height){
 				ball.y = 740.0f - ball.height;
 				velocityY = velocityY * -1.0f;
 				velocityX = (float)Math.random() * 14.0f - 7.0f;
-				breakblock.wallsound.play(0.7f);
+				playSound();
 			}
 			else if(ball.y < breakblock.paddle.y + breakblock.paddle.height){
 				if(ball.x <= breakblock.paddle.x + breakblock.paddle.width && ball.x >= breakblock.paddle.x - ball.width && ball.y > breakblock.paddle.y){
@@ -45,7 +45,7 @@ public class Ball {
 					if(breakblock.paddle.x != 0.0f && breakblock.paddle.x != 480.0f - breakblock.paddle.width){
 						velocityX = velocityX + Gdx.input.getAccelerometerX() * breakblock.game.accacc * 0.5f;
 					}
-					breakblock.wallsound.play(breakblock.game.volume);
+					playSound();
 				}
 				if(ball.y < 0.0f){
 					exists = false;
@@ -62,6 +62,11 @@ public class Ball {
 			delay --;
 		}
 	}
+
+	private void playSound() {
+		breakblock.wallsound.play(breakblock.game.volume);
+	}
+
 	public void create(Breakblock pbreakblock){
 		breakblock = pbreakblock;
 		exists = true;

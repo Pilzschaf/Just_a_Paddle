@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Intro {
 	
@@ -36,12 +37,18 @@ public class Intro {
 		color.a = 1.0f;
 		FreeTypeFontParameter param = new FreeTypeFontParameter();
 		param.size = 100;
-		param.color = color;
-		game.FontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("AHRONBD.TTF"));
-		game.Font = game.FontGenerator.generateFont(param);
-		param.size = 30;
-		game.font2 = game.FontGenerator.generateFont(param);
-		game.FontGenerator.dispose();
+		//param.color = color;
+		//TODO: Error
+		try {
+			game.FontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("AHRONBD.TTF"));
+			game.Font = game.FontGenerator.generateFont(param);
+			param.size = 30;
+			game.font2 = game.FontGenerator.generateFont(param);
+			game.FontGenerator.dispose();
+		}catch(GdxRuntimeException e){
+			//TODO: triggered?
+			System.out.println(e);
+		}
 		game.highscorebb = game.prefs.getInteger("highscorebb", 0);
 		game.highscoreee = game.prefs.getInteger("highscoreee", 0);
 		game.highscoreem = game.prefs.getInteger("highscoreem", 0);

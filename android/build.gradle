@@ -1,5 +1,5 @@
 android {
-    buildToolsVersion "21.1.2"
+    buildToolsVersion '21.1.2'
     compileSdkVersion 21
     sourceSets {
         main {
@@ -9,16 +9,17 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+            jniLibs.srcDir 'libs'
         }
 
         instrumentTest.setRoot('tests')
     }
 }
-// needed to add JNI shared libraries to APK when compiling on CLI
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
-    pkgTask.jniFolders = new HashSet<File>()
+// needed to add  shared libraries to APK when compiling on CLI
+/*tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+    pkgTask.Folders = new HashSet<File>()
     pkgTask.jniFolders.add(new File(projectDir, 'libs'))
-}
+}*/
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
 // so they get packed with the APK.
@@ -115,5 +116,14 @@ idea {
     }
 }
 dependencies {
-    compile files('libs/gdx-freetype.jar')
+    //compile files('libs/gdx-freetype.jar')
+    //compile files('/mnt/data/Workspace/Studio/Apps/JustAPaddle/Just_a_Paddle/gdx-freetype.jar')
+    //compile files('/mnt/data/Workspace/Studio/Apps/JustAPaddle/Just_a_Paddle/gdx-freetype-natives.jar')
+    //compile files('/mnt/nfs/home/Workspace/Studio/Apps/JustAPaddle/Just_a_Paddle/gdx-freetype.jar')
+    compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    //natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
+    //natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+    //natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+    //natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+    //natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 }
