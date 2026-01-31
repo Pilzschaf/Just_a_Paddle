@@ -1,4 +1,4 @@
-package de.pilzschaf.testgame.android;
+package de.pilzschaf.testgame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
